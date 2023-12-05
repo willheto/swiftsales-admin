@@ -51,7 +51,7 @@ class Service<ResourceType> {
 	 * @param {number} id
 	 * @returns {object}
 	 */
-	async getSingle(id: number | string): Promise<ResourceType> {
+	async getSingle(id: number): Promise<ResourceType> {
 		if (!id) {
 			throw MISSING_PARAMETERS;
 		}
@@ -64,13 +64,8 @@ class Service<ResourceType> {
 		// Type guard for response.
 		if (typeof response !== 'object') {
 			throw INVALID_RESPONSE;
-		} else if (
-			!response?.data ||
-			this.crudResponseObject in response.data === false
-		) {
-			console.error(
-				`[Service] object returned from API does not contain ${this.crudResponseObject} property.`,
-			);
+		} else if (!response?.data || this.crudResponseObject in response.data === false) {
+			console.error(`[Service] object returned from API does not contain ${this.crudResponseObject} property.`);
 			throw {
 				...INVALID_RESPONSE,
 				details: `Failed to fetch ${this.crudResponseObject}. Invalid response from the server.`,
@@ -93,9 +88,7 @@ class Service<ResourceType> {
 		if (typeof response !== 'object') {
 			throw INVALID_RESPONSE;
 		} else if (this.crudResponseArray in response.data === false) {
-			console.error(
-				`[Service] object returned from API does not contain ${this.crudResponseArray} property.`,
-			);
+			console.error(`[Service] object returned from API does not contain ${this.crudResponseArray} property.`);
 			throw {
 				...INVALID_RESPONSE,
 				details: `Failed to fetch ${this.crudResponseArray}. Invalid response from the server.`,
@@ -109,50 +102,20 @@ class Service<ResourceType> {
 	 * Get all resources by user id.
 	 * @param userID
 	 */
-	async getAllByUserID(userID: string): Promise<Array<ResourceType> | any> {
+	async getAllByUserID(userID: number): Promise<Array<ResourceType> | any> {
 		// Make API call
 		const url = `${API_BASE_URL}/users/${userID}/${this.serviceURL}`;
 		const response = await this.makeGetRequest(url);
 
-		// Type guard for response.
-		if (typeof response !== 'object') {
-			throw INVALID_RESPONSE;
-		} else if (this.crudResponseArray in response.data === false) {
-			console.error(
-				`[Service] object returned from API does not contain ${this.crudResponseArray} property.`,
-			);
+		if (this.crudResponseArray in response === false) {
+			console.error(`[Service] object returned from API does not contain ${this.crudResponseArray} property.`);
 			throw {
 				...INVALID_RESPONSE,
 				details: `Failed to fetch ${this.crudResponseArray}. Invalid response from the server.`,
 			};
 		}
 
-		return response.data[this.crudResponseArray];
-	}
-
-	/**
-	 * Get all resources by event id.
-	 * @param eventID
-	 */
-	async getAllByEventID(eventID: string): Promise<Array<ResourceType> | any> {
-		// Make API call
-		const url = `${API_BASE_URL}/events/${eventID}/${this.serviceURL}`;
-		const response = await this.makeGetRequest(url);
-
-		// Type guard for response.
-		if (typeof response !== 'object') {
-			throw INVALID_RESPONSE;
-		} else if (this.crudResponseArray in response.data === false) {
-			console.error(
-				`[Service] object returned from API does not contain ${this.crudResponseArray} property.`,
-			);
-			throw {
-				...INVALID_RESPONSE,
-				details: `Failed to fetch ${this.crudResponseArray}. Invalid response from the server.`,
-			};
-		}
-
-		return response.data[this.crudResponseArray];
+		return response[this.crudResponseArray];
 	}
 
 	/**
@@ -161,10 +124,7 @@ class Service<ResourceType> {
 	 * @param {object} data
 	 * @returns {object}
 	 */
-	create = async (
-		data: object,
-		callback?: (_response) => void,
-	): Promise<any> => {
+	create = async (data: object, callback?: (_response) => void): Promise<any> => {
 		if (typeof this.beforeCreate === 'function') {
 			data = this.beforeCreate(data);
 		}
@@ -173,11 +133,7 @@ class Service<ResourceType> {
 		const response = await axiosInstance.post(url, data);
 
 		if (!response?.data) {
-			if (
-				!response?.data ||
-				(this.crudResponseObject &&
-					!response.data[this.crudResponseObject])
-			) {
+			if (!response?.data || (this.crudResponseObject && !response.data[this.crudResponseObject])) {
 				throw INVALID_RESPONSE;
 			}
 		}
@@ -208,10 +164,7 @@ class Service<ResourceType> {
 			data = this.beforePatch(data);
 		}
 		const baseUrl = `${this.baseURL}`;
-		const response = await axiosInstance.patch(
-			url ? `${baseUrl}/${url}` : baseUrl,
-			data,
-		);
+		const response = await axiosInstance.patch(url ? `${baseUrl}/${url}` : baseUrl, data);
 
 		if (!response?.data || !response.data[this.crudResponseObject]) {
 			throw INVALID_RESPONSE;
@@ -245,7 +198,7 @@ class Service<ResourceType> {
 	 * @param {number} resourceID
 	 * @returns {object}
 	 */
-	deleteSingle = async (resourceID: string, userID: string) => {
+	deleteSingle = async (resourceID: number, userID: number) => {
 		if (!resourceID) {
 			throw { details: 'Invalid resourceID provided on delete.' };
 		}

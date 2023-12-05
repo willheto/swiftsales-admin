@@ -17,11 +17,13 @@ const Header = () => {
 };
 
 const HeaderContainer = styled.div`
+	z-index: 1000;
+	box-shadow: rgba(0, 30, 43, 0.1) 0px 4px 4px 0px;
 	display: flex;
 	align-items: center;
 	width: 100%;
 	padding: 1rem;
-    justify-content: space-between;
+	justify-content: space-between;
 	background-color: white;
 	border-bottom: 1px solid #d3d3d3;
 `;

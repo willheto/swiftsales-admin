@@ -1,23 +1,68 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Sidebar = () => {
+	// get current path when it changes
+	const location = useLocation();
+
+	const isCurrentPath = (path: string) => {
+		return location.pathname === path;
+	};
+
+	console.log(location.pathname);
 	return (
 		<SidebarContainer>
-			<Link to="/">overview</Link>
-			<Link to="/account">account</Link>
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/overview') }} to="/overview">
+				Overview
+			</StyledLink>
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/leads') }} to="/leads">
+				Leads
+			</StyledLink>
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/account') }} to="/account">
+				Account
+			</StyledLink>
 		</SidebarContainer>
 	);
 };
+const StyledLink = styled(Link)`
+	margin: 0px;
+	appearance: none;
+	border: medium;
+	cursor: pointer;
+	position: relative;
+	width: 100%;
+	min-height: 32px;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	display: flex;
+	-moz-box-align: center;
+	align-items: center;
+	font-family: 'Euclid Circular A', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-weight: normal;
+	text-align: left;
+	text-decoration: none;
+	text-transform: capitalize;
+	transition: background-color 100ms ease-in-out 0s;
+	color: rgb(0, 30, 43);
+	font-size: 13px;
+	line-height: 20px;
+
+	background-color: ${props => (props.theme.isCurrentPath ? 'rgb(232, 237, 235)' : 'transparent')};
+
+	&:hover {
+		background-color: rgb(232, 237, 235);
+	}
+`;
 
 const SidebarContainer = styled.div`
-	padding: 1rem;
+	padding-top: 1rem;
 	display: flex;
 	flex-direction: column;
 	width: 200px;
-	background-color: white;
-	border-right: 1px solid #d3d3d3;
+	min-width: 200px;
+	max-width: 200px;
+	background-color: #fbfbfb;
 `;
 
 export default Sidebar;

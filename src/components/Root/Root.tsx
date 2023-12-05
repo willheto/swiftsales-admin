@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Login from '../Login/Login';
 import styled from 'styled-components';
 import { useUser } from '@src/context/UserContext';
@@ -7,37 +7,40 @@ import { authenticate } from '@src/api/services/authService';
 
 const Root = () => {
 	const { user, setUser } = useUser();
-
+	const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 	const tryToAuthenticate = async () => {
-		const token = localStorage.getItem('swiftsalesAuthToken');
-		if (!token) return;
-		const response = await authenticate({ token: token });
+		try {
+			const token = localStorage.getItem('swiftsalesAuthToken');
+			if (!token) return;
+			const response = await authenticate({ token: token });
 
-		if (response.user) {
-			setUser(response.user);
+			if (response.user) {
+				setUser(response.user);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsAuthenticating(false);
 		}
 	};
 
 	useEffect(() => {
 		if (!user) {
+			setIsAuthenticating(true);
 			tryToAuthenticate();
 		}
 	}, []);
 
-	return (
+	return !user ? (
 		<AuthenticationContainer>
-			{!user ? (
-				<>
-					<Login />
-					<SalesTextContainer>
-						<h3 style={{ color: 'white' }}>Revolutionize your B2B sales game with our streamlined app.</h3>
-						Join now to simplify your sales process and boost your success.
-					</SalesTextContainer>
-				</>
-			) : (
-				<SwiftSalesAdmin />
-			)}
+			<Login isAuthenticating={isAuthenticating} />
+			<SalesTextContainer>
+				<h3 style={{ color: 'white' }}>Revolutionize your B2B sales game with our streamlined app.</h3>
+				Join now to simplify your sales process and boost your success.
+			</SalesTextContainer>
 		</AuthenticationContainer>
+	) : (
+		<SwiftSalesAdmin />
 	);
 };
 

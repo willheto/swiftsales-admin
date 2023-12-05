@@ -6,3 +6,14 @@ interface UserInterface {
 	lastName: string;
 	email: string;
 }
+
+interface LeadInterface {
+	leadID: number;
+	businessID: number | null;
+	companyName: string;
+	contactPerson: string | null;
+	contactPhone: string | null;
+	contactEmail: string | null;
+	header: string | null;
+	description: string | null;
+}

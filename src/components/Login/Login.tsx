@@ -6,7 +6,7 @@ import { SwiftSalesButton } from '../SwiftSalesComponents/SwiftSalesComponents';
 import { login } from '@src/api/services/authService';
 import { useUser } from '@src/context/UserContext';
 
-const Login = () => {
+const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 	const { setUser, user } = useUser();
 	const [loginData, setLoginData] = React.useState({
 		email: '',
@@ -50,9 +50,7 @@ const Login = () => {
 				<Form.Label>Password</Form.Label>
 				<Form.Control type="password" onChange={handlePasswordChange} />
 			</Form.Group>
-			<SwiftSalesButton style={{ width: '300px' }} type="submit">
-				Login
-			</SwiftSalesButton>
+			{isAuthenticating ? <div>Loading...</div> : <SwiftSalesButton size="big">Login</SwiftSalesButton>}
 		</LoginContainer>
 	);
 };
