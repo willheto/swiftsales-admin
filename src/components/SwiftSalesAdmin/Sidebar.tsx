@@ -13,14 +13,11 @@ const Sidebar = () => {
 	console.log(location.pathname);
 	return (
 		<SidebarContainer>
-			<StyledLink theme={{ isCurrentPath: isCurrentPath('/overview') }} to="/overview">
-				Overview
-			</StyledLink>
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/leads') }} to="/leads">
 				Leads
 			</StyledLink>
-			<StyledLink theme={{ isCurrentPath: isCurrentPath('/account') }} to="/account">
-				Account
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/sales-appointments') }} to="/sales-appointments">
+				Sales Appointments
 			</StyledLink>
 		</SidebarContainer>
 	);

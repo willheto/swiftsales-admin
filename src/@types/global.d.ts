@@ -16,4 +16,16 @@ interface LeadInterface {
 	contactEmail: string | null;
 	header: string | null;
 	description: string | null;
+	created_at: string;
+	updated_at: string;
+}
+
+interface SalesAppointmentInterface {
+	salesAppointmentID: number;
+	leadID: number;
+	timeStart: string;
+	timeEnd: string;
+	notes: string | null;
+	created_at: string;
+	updated_at: string;
 }

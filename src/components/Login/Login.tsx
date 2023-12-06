@@ -35,6 +35,7 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLoginData({ ...loginData, password: e.target.value });
 	};
+
 	return (
 		<LoginContainer onSubmit={handleSubmit}>
 			<div className="d-flex align-items-center gap-3 mb-4">
@@ -50,7 +51,13 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 				<Form.Label>Password</Form.Label>
 				<Form.Control type="password" onChange={handlePasswordChange} />
 			</Form.Group>
-			{isAuthenticating ? <div>Loading...</div> : <SwiftSalesButton size="big">Login</SwiftSalesButton>}
+			{isAuthenticating ? (
+				<div>Loading...</div>
+			) : (
+				<SwiftSalesButton variant="primary" size="big" type="submit">
+					Login
+				</SwiftSalesButton>
+			)}
 		</LoginContainer>
 	);
 };

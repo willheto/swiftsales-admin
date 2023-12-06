@@ -132,10 +132,8 @@ class Service<ResourceType> {
 		// Make API call
 		const response = await axiosInstance.post(url, data);
 
-		if (!response?.data) {
-			if (!response?.data || (this.crudResponseObject && !response.data[this.crudResponseObject])) {
-				throw INVALID_RESPONSE;
-			}
+		if (!response[this.crudResponseObject]) {
+			throw INVALID_RESPONSE;
 		}
 
 		if (typeof callback === 'function') {
@@ -166,7 +164,7 @@ class Service<ResourceType> {
 		const baseUrl = `${this.baseURL}`;
 		const response = await axiosInstance.patch(url ? `${baseUrl}/${url}` : baseUrl, data);
 
-		if (!response?.data || !response.data[this.crudResponseObject]) {
+		if (!response[this.crudResponseObject]) {
 			throw INVALID_RESPONSE;
 		}
 
@@ -198,16 +196,13 @@ class Service<ResourceType> {
 	 * @param {number} resourceID
 	 * @returns {object}
 	 */
-	deleteSingle = async (resourceID: number, userID: number) => {
+	deleteSingle = async (resourceID: number) => {
 		if (!resourceID) {
 			throw { details: 'Invalid resourceID provided on delete.' };
 		}
-		if (!userID) {
-			throw { details: 'Invalid userID provided on delete.' };
-		}
 
 		const url = `${this.baseURL}`;
-		const data = { [this.keyParameter]: resourceID, userID: userID };
+		const data = { [this.keyParameter]: resourceID };
 		const response = await axiosInstance.delete(url, { data });
 
 		return response;
