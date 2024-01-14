@@ -19,7 +19,7 @@ export const SwiftSalesButton = ({
 	disabled?: boolean;
 }) => {
 	return (
-		<BaseButton theme={{ size, variant, disabled }} onClick={onClick} type={type}>
+		<BaseButton theme={{ size, variant, disabled }} onClick={onClick} type={type} disabled={disabled}>
 			{children}
 		</BaseButton>
 	);
@@ -42,9 +42,10 @@ const BaseButton = styled.button`
 	border-radius: 5px;
 	cursor: pointer;
 	transition: 0.2s ease-in-out;
-	&:hover {
-		opacity: 0.8;
-	}
+
+	${props => props.theme.disabled && 'opacity: 0.5;'}
+	${props => props.theme.disabled && 'cursor: not-allowed;'}
+	${props => !props.theme.disabled && '&:hover { opacity: 0.8;}'}
 `;
 
 export default SwiftSalesButton;

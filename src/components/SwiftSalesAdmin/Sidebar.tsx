@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Sidebar = () => {
@@ -10,7 +10,14 @@ const Sidebar = () => {
 		return location.pathname === path;
 	};
 
-	console.log(location.pathname);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (location.pathname === '/') {
+			navigate('/leads');
+		}
+	}, [location.pathname]);
+
 	return (
 		<SidebarContainer>
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/leads') }} to="/leads">

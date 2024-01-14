@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledTable as Table } from '../../components/Table/Table';
+import Table from '../../components/Table/Table';
 import { Card, Modal } from 'react-bootstrap';
 import Content from '@src/components/SwiftSalesAdmin/Content';
 import SwiftSalesButton from '@src/components/SwiftSalesComponents/SwiftSalesComponents';
@@ -85,35 +85,14 @@ const Leads = () => {
 			<Content>
 				<h5>Leads</h5>
 
-				<Card className="p-3 overflow-auto">
+				<Card className="p-3 overflow-auto h-100">
 					<Card.Header className="p-0 pb-3">
 						<SwiftSalesButton variant="primary" size="small" onClick={() => setEditingLead(null)}>
 							Create new
 						</SwiftSalesButton>
 					</Card.Header>
-					<div className="overflow-auto">
-						<Table>
-							<thead>
-								<tr>
-									{columns.map(column => (
-										<th key={column.name}>{column.label}</th>
-									))}
-								</tr>
-							</thead>
-							<tbody>
-								{leads
-									?.sort(
-										(a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-									)
-									.map(lead => (
-										<tr key={lead.leadID} onClick={() => handleAddEdit(lead)}>
-											{columns.map(column => (
-												<td key={column.name}>{lead[column.name]}</td>
-											))}
-										</tr>
-									))}
-							</tbody>
-						</Table>
+					<div className="overflow-auto h-100">
+						<Table resource={leads} columns={columns} handleAddEdit={handleAddEdit} />
 					</div>
 				</Card>
 			</Content>

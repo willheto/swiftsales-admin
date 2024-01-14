@@ -1,6 +1,59 @@
 import styled from 'styled-components';
+import React from 'react';
+import useParseDate from '@src/hooks/useParseDate';
 
-export const StyledTable = styled.table`
+type TableProps = {
+	resource: any;
+	columns: {
+		name: string;
+		label: string;
+	}[];
+	handleAddEdit: (resource: any) => void;
+};
+
+const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
+	const { parseDate } = useParseDate();
+
+	return (
+		<StyledTable>
+			<thead>
+				<tr>
+					{columns.map(column => (
+						<th key={column.name}>{column.label}</th>
+					))}
+				</tr>
+			</thead>
+			<tbody>
+				{!resource && (
+					<tr>
+						<td colSpan={columns.length}>Loading...</td>
+					</tr>
+				)}
+				{resource
+					?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+					.map(resource => (
+						<tr key={resource.leadID} onClick={() => handleAddEdit(resource)}>
+							{columns.map(column => {
+								if (column.name === 'created_at' || column.name === 'updated_at') {
+									return <td key={column.name}>{parseDate(resource[column.name])}</td>;
+								} else {
+									return (
+										<td key={column.name}>
+											{resource[column.name] === '' ? '-' : resource[column.name]}
+										</td>
+									);
+								}
+							})}
+						</tr>
+					))}
+			</tbody>
+		</StyledTable>
+	);
+};
+
+export default Table;
+
+const StyledTable = styled.table`
 	table-layout: fixed;
 	font-size: 12px;
 	border-collapse: collapse;

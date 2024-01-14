@@ -1,4 +1,5 @@
 @import 'bootstrap/scss/bootstrap';
+@import 'react-datepicker/dist/react-datepicker.css';
 
 body,
 html {
@@ -23,4 +24,58 @@ h1 {
 
 .card-header {
 	background-color: white;
+}
+
+.dropdown-toggle {
+	padding: 0px !important;
+	background-color: transparent;
+	color: black;
+	border: none;
+
+	&:hover {
+		background-color: transparent !important;
+		color: black !important;
+		border: none !important;
+	}
+
+	&:focus {
+		background-color: transparent !important;
+		color: black !important;
+		border: none !important;
+	}
+
+	&:active {
+		background-color: transparent !important;
+		color: black !important;
+		border: none !important;
+	}
+}
+.btn.show {
+	background-color: transparent !important;
+	color: black !important;
+	border: none !important;
+}
+
+.dropdown-item {
+	background-color: transparent;
+	color: black;
+	border: none;
+	transition: background-color 100ms ease-in-out 0s;
+	font-size: 13px;
+
+	&:hover {
+		background-color: rgb(232, 237, 235) !important;
+	}
+
+	&:focus {
+		background-color: transparent !important;
+		color: black !important;
+		border: none !important;
+	}
+
+	&:active {
+		background-color: transparent !important;
+		color: black !important;
+		border: none !important;
+	}
 }

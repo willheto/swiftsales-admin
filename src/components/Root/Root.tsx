@@ -8,6 +8,7 @@ import { authenticate } from '@src/api/services/authService';
 const Root = () => {
 	const { user, setUser } = useUser();
 	const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
+
 	const tryToAuthenticate = async () => {
 		try {
 			const token = localStorage.getItem('swiftsalesAuthToken');
@@ -33,7 +34,7 @@ const Root = () => {
 
 	return !user ? (
 		<AuthenticationContainer>
-			<Login isAuthenticating={isAuthenticating} />
+			<Login isAuthenticating={isAuthenticating} setIsAuthenticating={setIsAuthenticating} />
 			<SalesTextContainer>
 				<h3 style={{ color: 'white' }}>Revolutionize your B2B sales game with our streamlined app.</h3>
 				Join now to simplify your sales process and boost your success.

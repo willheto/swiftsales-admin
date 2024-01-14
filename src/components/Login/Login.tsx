@@ -6,9 +6,19 @@ import { SwiftSalesButton } from '../SwiftSalesComponents/SwiftSalesComponents';
 import { login } from '@src/api/services/authService';
 import { useUser } from '@src/context/UserContext';
 
-const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
+const Login = ({
+	isAuthenticating,
+	setIsAuthenticating,
+}: {
+	isAuthenticating: boolean;
+	setIsAuthenticating: (isAuthenticating: boolean) => void;
+}) => {
 	const { setUser, user } = useUser();
-	const [loginData, setLoginData] = React.useState({
+	const [loginError, setLoginError] = React.useState<string | null>(null);
+	const [loginData, setLoginData] = React.useState<{
+		email: string;
+		password: string;
+	}>({
 		email: '',
 		password: '',
 	});
@@ -16,6 +26,7 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
+			setIsAuthenticating(true);
 			const response = await login(loginData);
 
 			if (response.token && response.user) {
@@ -24,7 +35,12 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 				setUser(response.user);
 			}
 		} catch (e) {
+			if (e.error) {
+				setLoginError(e.error);
+			}
 			console.log(e);
+		} finally {
+			setIsAuthenticating(false);
 		}
 	};
 
@@ -42,22 +58,28 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 				<GrSwift size={30} />
 				<h2 className="mb-0">Swiftsales Admin</h2>
 			</div>
-			<h3>Login in to your account</h3>
-			<Form.Group style={{ width: '300px' }}>
-				<Form.Label>Email</Form.Label>
-				<Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
-			</Form.Group>
-			<Form.Group style={{ width: '300px' }}>
-				<Form.Label>Password</Form.Label>
-				<Form.Control type="password" onChange={handlePasswordChange} />
-			</Form.Group>
-			{isAuthenticating ? (
-				<div>Loading...</div>
-			) : (
-				<SwiftSalesButton variant="primary" size="big" type="submit">
-					Login
-				</SwiftSalesButton>
-			)}
+			<div className="d-flex flex-column mt-4 gap-2">
+				<h3>Login in to your account</h3>
+				<Form.Group style={{ width: '300px' }}>
+					<Form.Label>Email</Form.Label>
+					<Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
+				</Form.Group>
+				<Form.Group style={{ width: '300px' }}>
+					<Form.Label>Password</Form.Label>
+					<Form.Control type="password" onChange={handlePasswordChange} />
+				</Form.Group>
+				{loginError && <div className="text-danger">{loginError}</div>}
+
+				{isAuthenticating ? (
+					<SwiftSalesButton variant="primary" size="big" type="submit" disabled>
+						Logging in...
+					</SwiftSalesButton>
+				) : (
+					<SwiftSalesButton variant="primary" size="big" type="submit">
+						Login
+					</SwiftSalesButton>
+				)}
+			</div>
 		</LoginContainer>
 	);
 };
@@ -65,7 +87,6 @@ const Login = ({ isAuthenticating }: { isAuthenticating: boolean }) => {
 const LoginContainer = styled.form`
 	display: flex;
 	flex-direction: column;
-	gap: 1rem;
 	width: 420px;
 	padding-left: 60px;
 	padding-top: 60px;

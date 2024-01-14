@@ -13,28 +13,24 @@ export const authenticate = async ({ token }: { token: string }) => {
 	}
 };
 
-export const login = async ({ email, password }: { email: string; password: string }) => {
-	try {
-		if (!email || !password) {
-			throw new Error('Missing email or password');
-		}
-
-		const url = `${API_BASE_URL}/user/login`;
-		const loginPayload = {
-			email,
-			password,
-		};
-
-		const response = await axiosInstance.post(url, loginPayload);
-
-		// @ts-expect-error
-		if (!response?.token) {
-			throw new Error('Invalid response from the server');
-		}
-		return response;
-	} catch (error) {
-		return error;
+export const login = async ({ email, password }: { email: string; password: string }): Promise<any> => {
+	if (!email || !password) {
+		throw new Error('Missing email or password');
 	}
+
+	const url = `${API_BASE_URL}/user/login`;
+	const loginPayload = {
+		email,
+		password,
+	};
+
+	const response = await axiosInstance.post(url, loginPayload);
+
+	// @ts-expect-error
+	if (!response?.token) {
+		throw new Error('Invalid response from the server');
+	}
+	return response;
 };
 
 export const logout = async () => {

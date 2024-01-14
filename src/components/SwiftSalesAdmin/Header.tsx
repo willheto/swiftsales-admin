@@ -1,17 +1,31 @@
 import { useUser } from '@src/context/UserContext';
 import React from 'react';
+import { Dropdown } from 'react-bootstrap';
 import { GrSwift } from 'react-icons/gr';
 import styled from 'styled-components';
 
 const Header = () => {
 	const { user } = useUser();
+
+	const handleLogout = () => {
+		localStorage.removeItem('swiftsalesAuthToken');
+		window.location.reload();
+	};
 	return (
 		<HeaderContainer>
 			<div className="d-flex align-items-center gap-2">
 				<GrSwift size={25} fill="#102526" />
 				<h5 className="mb-0">Swiftsales Admin</h5>
 			</div>
-			<div>{user?.firstName}</div>
+			<Dropdown>
+				<Dropdown.Toggle>{user?.firstName}</Dropdown.Toggle>
+
+				<Dropdown.Menu>
+					<Dropdown.Item href="#" onClick={handleLogout}>
+						Log out
+					</Dropdown.Item>
+				</Dropdown.Menu>
+			</Dropdown>
 		</HeaderContainer>
 	);
 };

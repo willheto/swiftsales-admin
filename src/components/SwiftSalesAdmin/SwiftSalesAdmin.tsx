@@ -2,8 +2,6 @@ import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import RouteFile from '../Routes/Routes';
-import styled from 'styled-components';
-import { GrSwift } from 'react-icons/gr';
 
 const SwiftSalesAdmin = () => {
 	return (
@@ -12,7 +10,7 @@ const SwiftSalesAdmin = () => {
 			<div
 				className="d-flex"
 				style={{
-					height: 'calc(100% - 58px)',
+					height: 'calc(100% - 59px)',
 				}}
 			>
 				<Sidebar />

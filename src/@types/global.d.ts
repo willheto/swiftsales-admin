@@ -26,6 +26,27 @@ interface SalesAppointmentInterface {
 	timeStart: string;
 	timeEnd: string;
 	notes: string | null;
+	salesAppointmentFiles: SalesAppointmentFileInterface[];
 	created_at: string;
 	updated_at: string;
 }
+
+interface SalesAppointmentFileInterface {
+	salesAppointmentFileID: number;
+	salesAppointmentID: number;
+	fileID: number;
+	file: FileInterface;
+	created_at: string;
+	updated_at: string;
+}
+
+interface FileInterface {
+	fileID: number;
+	fileName: string;
+	filePath: string;
+	fileType: string;
+	created_at: string;
+	updated_at: string;
+}
+
+
