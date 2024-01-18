@@ -7,6 +7,7 @@ type TableProps = {
 	columns: {
 		name: string;
 		label: string;
+		render?: (resource: any) => JSX.Element;
 	}[];
 	handleAddEdit: (resource: any) => void;
 };
@@ -34,6 +35,9 @@ const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 					.map(resource => (
 						<tr key={resource.leadID} onClick={() => handleAddEdit(resource)}>
 							{columns.map(column => {
+								if (column.render) {
+									return <td key={column.name}>{column.render(resource)}</td>;
+								}
 								if (column.name === 'created_at' || column.name === 'updated_at') {
 									return <td key={column.name}>{parseDate(resource[column.name])}</td>;
 								} else {

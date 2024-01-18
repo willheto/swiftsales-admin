@@ -1,4 +1,5 @@
 declare const API_BASE_URL: string;
+declare const FRONT_BASE_URL: string;
 
 interface UserInterface {
 	userID: number;
@@ -26,6 +27,7 @@ interface SalesAppointmentInterface {
 	timeStart: string;
 	timeEnd: string;
 	notes: string | null;
+	meetingUrl: string;
 	salesAppointmentFiles: SalesAppointmentFileInterface[];
 	created_at: string;
 	updated_at: string;
@@ -48,5 +50,3 @@ interface FileInterface {
 	created_at: string;
 	updated_at: string;
 }
-
-
