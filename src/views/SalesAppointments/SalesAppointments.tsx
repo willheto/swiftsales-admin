@@ -7,12 +7,16 @@ import api from '@src/api';
 import { useUser } from '@src/context/UserContext';
 import styled from 'styled-components';
 import SalesAppointmentForm from './SalesAppointmentForm';
-import { IoCopyOutline } from 'react-icons/io5';
+import { IoCopyOutline, IoReloadOutline } from 'react-icons/io5';
+import useParseDate from '@src/hooks/useParseDate';
 
 const SalesAppointments = () => {
 	const { user } = useUser();
+	const { parseDate } = useParseDate();
 	const [salesAppointments, setSalesAppointments] = React.useState<SalesAppointmentInterface[]>();
 	const [copiedStatus, setCopiedStatus] = React.useState<{ [key: number]: boolean }>({});
+	const [renewingStatus, setRenewingStatus] = React.useState<{ [key: number]: boolean }>({});
+
 	const fetchSalesAppointments = async () => {
 		try {
 			if (!user) return;
@@ -45,10 +49,9 @@ const SalesAppointments = () => {
 		}
 	`;
 
-	const handleCopyMeetingUrl = async (e, salesAppointment: SalesAppointmentInterface) => {
+	const handleCopyMeetingUrl = async (e: any, salesAppointment: SalesAppointmentInterface) => {
 		e.stopPropagation();
 		const meetingUrl = `${FRONT_BASE_URL}/?salesAppointmentID=${salesAppointment.salesAppointmentID}`;
-		console.log(meetingUrl);
 		await navigator.clipboard.writeText(meetingUrl);
 
 		setCopiedStatus(prevStatus => ({
@@ -64,6 +67,25 @@ const SalesAppointments = () => {
 		}, 2000); // 2 seconds delay
 	};
 
+	const handleMeetingUrlRenew = async (e: any, salesAppointment: SalesAppointmentInterface) => {
+		e.stopPropagation();
+		try {
+			setRenewingStatus(prevStatus => ({
+				...prevStatus,
+				[salesAppointment.salesAppointmentID]: true,
+			}));
+			await api.salesAppointments.renewMeetingUrl(salesAppointment.salesAppointmentID);
+			fetchSalesAppointments();
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setRenewingStatus(prevStatus => ({
+				...prevStatus,
+				[salesAppointment.salesAppointmentID]: false,
+			}));
+		}
+	};
+
 	const columns = [
 		{
 			name: 'leadID',
@@ -77,6 +99,25 @@ const SalesAppointments = () => {
 			name: 'meetingUrl',
 			label: 'Meeting Url',
 			render: (salesAppointment: SalesAppointmentInterface) => {
+				if (!salesAppointment.meetingUrl) {
+					return (
+						<MeetingUrlCopyButton
+							onClick={e => {
+								handleMeetingUrlRenew(e, salesAppointment);
+							}}
+							disabled={renewingStatus[salesAppointment.salesAppointmentID] || false}
+						>
+							<SpinningRenewIcon
+								theme={{
+									spin: renewingStatus[salesAppointment.salesAppointmentID] || false,
+								}}
+							>
+								<IoReloadOutline />
+							</SpinningRenewIcon>
+							{renewingStatus[salesAppointment.salesAppointmentID] ? 'Renewing...' : 'Renew meeting url'}
+						</MeetingUrlCopyButton>
+					);
+				}
 				const isCopied = copiedStatus[salesAppointment.salesAppointmentID] || false;
 				return (
 					<MeetingUrlCopyButton
@@ -88,6 +129,25 @@ const SalesAppointments = () => {
 						{isCopied ? 'Copied!' : 'Copy meeting url to clipboard'}
 					</MeetingUrlCopyButton>
 				);
+			},
+		},
+		{
+			name: 'meetingExpiryTime',
+			label: 'Meeting Expiry Time',
+			render: (salesAppointment: SalesAppointmentInterface) => {
+				return salesAppointment.meetingExpiryTime ? (
+					<span>{parseDate(salesAppointment.meetingExpiryTime)}</span>
+				) : (
+					<span>Expired</span>
+				);
+			},
+		},
+
+		{
+			name: 'isCustomerAllowedToShareFiles',
+			label: 'Is Customer Allowed To Share Files',
+			render: (salesAppointment: SalesAppointmentInterface) => {
+				return salesAppointment.isCustomerAllowedToShareFiles ? <span>Yes</span> : <span>No</span>;
 			},
 		},
 		{
@@ -147,6 +207,14 @@ const SalesAppointments = () => {
 		</>
 	);
 };
+
+const SpinningRenewIcon = styled.div`
+	display: flex;
+
+	${props =>
+		props.theme.spin &&
+		'animation: spin 1s linear infinite; @keyframes spin { 100% { transform: rotate(360deg); }}'};
+`;
 
 const SalesAppointmentFormModal = styled(Modal)``;
 export default SalesAppointments;

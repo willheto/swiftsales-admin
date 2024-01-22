@@ -6,7 +6,7 @@ import { Form } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { bytesToMegabytes } from '@src/utils/utils';
+import { bytesToMegabytes, getBase64 } from '@src/utils/utils';
 
 type SalesAppointmentFormProps = {
 	salesAppointment?: SalesAppointmentInterface | null;
@@ -27,7 +27,7 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 	});
 
 	const { user } = useUser();
-	const [leads, setLeads] = React.useState<LeadInterface[]>([]);
+	const [leads, setLeads] = React.useState<LeadInterface[]>();
 	const [error, setError] = React.useState<string | null>(null);
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -42,7 +42,6 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 
 	const onSubmit = async (data: any) => {
 		try {
-			console.log(data);
 			setIsSubmitting(true);
 			let payload: any;
 
@@ -75,21 +74,6 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 			}
 		} catch (e) {
 			console.log(e);
-		}
-	};
-
-	const getBase64 = async (file: any) => {
-		try {
-			const base64image = await new Promise((resolve, reject) => {
-				const fileReader = new FileReader();
-				fileReader.readAsDataURL(file);
-				fileReader.onload = () => resolve(fileReader.result);
-				fileReader.onerror = error => reject(error);
-			});
-			return base64image;
-		} catch (error) {
-			console.error(error);
-			return;
 		}
 	};
 
@@ -137,13 +121,23 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 	const salesAppointmentFilesExist =
 		salesAppointment?.salesAppointmentFiles && salesAppointment.salesAppointmentFiles.length > 0;
 
+	if (!leads) return null;
+
 	return (
 		<Form className="p-4" onSubmit={handleSubmit(onSubmit)}>
 			<h5>{salesAppointment ? 'Edit' : 'Create'} Sales appointment</h5>
 			<div className="d-flex flex-column gap-2">
 				<Form.Group>
 					<Form.Label>Lead</Form.Label>
-					<Form.Select {...register('leadID')}>
+					<Form.Select
+						{...register('leadID', {
+							setValueAs: (value: any) => {
+								return Number(value);
+							},
+							required: true,
+						})}
+					>
+						<option value="">Select lead</option>
 						{leads.map(lead => (
 							<option key={lead.leadID} value={lead.leadID}>
 								{lead.companyName}
@@ -164,8 +158,15 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 							<p>Drag 'n' drop some files here, or click to select files</p>
 						</StyledDropArea>
 						<aside>
-							<Form.Label>Allowed filetypes: </Form.Label>{' '}
-							<span>.jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx</span>
+							<Form.Text className="text-muted">
+								Allowed filetypes: .jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx
+							</Form.Text>{' '}
+							<Form.Group>
+								<Form.Text className="text-muted">
+									Interested in more filetypes? Contact us at{' '}
+									<a href="mailto: info@swiftsales.fi">sales@swiftsales.fi</a>
+								</Form.Text>
+							</Form.Group>
 							{salesAppointmentFilesExist && (
 								<>
 									<Form.Label>Existing files</Form.Label>

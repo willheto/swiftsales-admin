@@ -6,6 +6,7 @@ interface UserInterface {
 	firstName: string;
 	lastName: string;
 	email: string;
+	timeZone: string;
 }
 
 interface LeadInterface {
@@ -30,6 +31,7 @@ interface SalesAppointmentInterface {
 	meetingUrl: string;
 	isCustomerAllowedToShareFiles: boolean;
 	salesAppointmentFiles: SalesAppointmentFileInterface[];
+	meetingExpiryTime?: string;
 	created_at: string;
 	updated_at: string;
 }

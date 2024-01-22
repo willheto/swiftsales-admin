@@ -26,6 +26,12 @@ const Sidebar = () => {
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/sales-appointments') }} to="/sales-appointments">
 				Sales Appointments
 			</StyledLink>
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/user') }} to="/user">
+				User
+			</StyledLink>
+			<StyledLink theme={{ isCurrentPath: isCurrentPath('/settings') }} to="/settings">
+				Settings
+			</StyledLink>
 		</SidebarContainer>
 	);
 };

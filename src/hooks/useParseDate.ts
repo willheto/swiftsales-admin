@@ -1,14 +1,13 @@
+import { DateTime } from 'luxon';
+
 const useParseDate = () => {
 	const parseDate = (date: string) => {
-		const dateObj = new Date(date);
-		const day = dateObj.getDate();
-		const month = dateObj.getMonth() + 1;
-		const year = dateObj.getFullYear();
-		const hour = dateObj.getHours();
-		const minutes = dateObj.getMinutes();
-		const seconds = dateObj.getSeconds();
+		const dateTime = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', { zone: 'utc' });
 
-		return `${day}/${month}/${year} ${hour}:${minutes}:${seconds}`;
+		// conver to helsinki time
+		const parsedDate = dateTime.setZone('Europe/Helsinki').toFormat('dd.MM.yyyy HH:mm');
+
+		return parsedDate;
 	};
 
 	return { parseDate };
