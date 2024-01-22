@@ -28,6 +28,7 @@ interface SalesAppointmentInterface {
 	timeEnd: string;
 	notes: string | null;
 	meetingUrl: string;
+	isCustomerAllowedToShareFiles: boolean;
 	salesAppointmentFiles: SalesAppointmentFileInterface[];
 	created_at: string;
 	updated_at: string;

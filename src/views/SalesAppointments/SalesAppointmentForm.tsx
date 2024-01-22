@@ -164,6 +164,8 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 							<p>Drag 'n' drop some files here, or click to select files</p>
 						</StyledDropArea>
 						<aside>
+							<Form.Label>Allowed filetypes: </Form.Label>{' '}
+							<span>.jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx</span>
 							{salesAppointmentFilesExist && (
 								<>
 									<Form.Label>Existing files</Form.Label>
@@ -186,6 +188,14 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 							)}
 						</aside>
 					</StyledSection>
+				</Form.Group>
+				<Form.Group>
+					<Form.Label>Settings</Form.Label>
+					<Form.Switch
+						id="isCustomerAllowedToShareFiles"
+						label="Is customer allowed to share files?"
+						{...register('isCustomerAllowedToShareFiles')}
+					/>
 				</Form.Group>
 			</div>
 			{error && <div className="text-danger">{error}</div>}

@@ -79,3 +79,14 @@ h1 {
 		border: none !important;
 	}
 }
+
+.form-check-input:checked {
+	background-color: #102526 !important;
+	border-color: #102526 !important;
+}
+
+.form-check-input:focus {
+	border-color: #102526 !important;
+	box-shadow: none !important;
+}
+
