@@ -1,12 +1,16 @@
 declare const API_BASE_URL: string;
 declare const FRONT_BASE_URL: string;
 
+type AlertType = 'success' | 'danger' | 'warning' | 'info';
+
 interface UserInterface {
 	userID: number;
 	firstName: string;
 	lastName: string;
 	email: string;
 	timeZone: string;
+	organization: OrganizationInterface;
+	organizationID: number;
 }
 
 interface LeadInterface {
@@ -50,6 +54,14 @@ interface FileInterface {
 	fileName: string;
 	filePath: string;
 	fileType: string;
+	created_at: string;
+	updated_at: string;
+}
+
+interface OrganizationInterface {
+	organizationID: number;
+	organizationName: string;
+	licenseType: string;
 	created_at: string;
 	updated_at: string;
 }

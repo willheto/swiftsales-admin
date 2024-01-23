@@ -16,7 +16,7 @@ const Sidebar = () => {
 		if (location.pathname === '/') {
 			navigate('/leads');
 		}
-	}, [location.pathname]);
+	}, [location.pathname, navigate]);
 
 	return (
 		<SidebarContainer>
@@ -25,9 +25,6 @@ const Sidebar = () => {
 			</StyledLink>
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/sales-appointments') }} to="/sales-appointments">
 				Sales Appointments
-			</StyledLink>
-			<StyledLink theme={{ isCurrentPath: isCurrentPath('/user') }} to="/user">
-				User
 			</StyledLink>
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/settings') }} to="/settings">
 				Settings

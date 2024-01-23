@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Login from '../Login/Login';
 import styled from 'styled-components';
 import { useUser } from '@src/context/UserContext';
@@ -9,7 +9,7 @@ const Root = () => {
 	const { user, setUser } = useUser();
 	const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
-	const tryToAuthenticate = async () => {
+	const tryToAuthenticate = useCallback(async () => {
 		try {
 			const token = localStorage.getItem('swiftsalesAuthToken');
 			if (!token) return;
@@ -23,14 +23,14 @@ const Root = () => {
 		} finally {
 			setIsAuthenticating(false);
 		}
-	};
+	}, [setUser]);
 
 	useEffect(() => {
 		if (!user) {
 			setIsAuthenticating(true);
 			tryToAuthenticate();
 		}
-	}, []);
+	}, [tryToAuthenticate, user]);
 
 	return !user ? (
 		<AuthenticationContainer>

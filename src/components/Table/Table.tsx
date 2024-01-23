@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import useParseDate from '@src/hooks/useParseDate';
+import { ScaleLoader } from 'react-spinners';
 
 type TableProps = {
 	resource: any;
@@ -17,48 +18,55 @@ const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 
 	return (
 		<StyledTable>
-			<thead>
-				<tr>
-					{columns.map(column => (
-						<th key={column.name}>{column.label}</th>
-					))}
-				</tr>
-			</thead>
-			<tbody>
-				{!resource && (
-					<tr>
-						<td colSpan={columns.length}>Loading...</td>
-					</tr>
-				)}
-				{resource
-					?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-					.map((resource: any, index: number) => (
-						<tr key={index} onClick={() => handleAddEdit(resource)}>
-							{columns.map(column => {
-								if (column.render) {
-									return <td key={column.name}>{column.render(resource)}</td>;
-								}
-								if (
-									column.name === 'created_at' ||
-									column.name === 'updated_at' ||
-									column.name === 'meetingExpiryTime'
-								) {
-									return (
-										<td key={column.name}>
-											{resource[column.name] ? parseDate(resource[column.name]) : '-'}
-										</td>
-									);
-								} else {
-									return (
-										<td key={column.name}>
-											{resource[column.name] === '' ? '-' : resource[column.name]}
-										</td>
-									);
-								}
-							})}
+			{!resource ? (
+				<span
+					className="d-flex flex-column justify-content-center align-items-center w-100"
+					style={{ height: '200px' }}
+				>
+					<ScaleLoader color="rgb(16, 37, 38)" className="mb-4" />
+					Loading data...
+				</span>
+			) : (
+				<>
+					<thead>
+						<tr>
+							{columns.map(column => (
+								<th key={column.name}>{column.label}</th>
+							))}
 						</tr>
-					))}
-			</tbody>
+					</thead>
+					<tbody>
+						{resource
+							?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+							.map((resource: any, index: number) => (
+								<tr key={index} onClick={() => handleAddEdit(resource)}>
+									{columns.map(column => {
+										if (column.render) {
+											return <td key={column.name}>{column.render(resource)}</td>;
+										}
+										if (
+											column.name === 'created_at' ||
+											column.name === 'updated_at' ||
+											column.name === 'meetingExpiryTime'
+										) {
+											return (
+												<td key={column.name}>
+													{resource[column.name] ? parseDate(resource[column.name]) : '-'}
+												</td>
+											);
+										} else {
+											return (
+												<td key={column.name}>
+													{resource[column.name] === '' ? '-' : resource[column.name]}
+												</td>
+											);
+										}
+									})}
+								</tr>
+							))}
+					</tbody>
+				</>
+			)}
 		</StyledTable>
 	);
 };

@@ -1,20 +1,22 @@
 import api from '@src/api';
 import SwiftSalesButton from '@src/components/SwiftSalesComponents/SwiftSalesComponents';
 import { useUser } from '@src/context/UserContext';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { bytesToMegabytes, getBase64 } from '@src/utils/utils';
+import { StyledSection, StyledDropArea } from '@src/components/DropArea/DropArea';
 
 type SalesAppointmentFormProps = {
 	salesAppointment?: SalesAppointmentInterface | null;
+	leads: LeadInterface[];
 	onClose: () => void;
 	successCallback: () => void;
 };
 
-const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: SalesAppointmentFormProps) => {
+const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallback }: SalesAppointmentFormProps) => {
 	const {
 		register,
 		handleSubmit,
@@ -26,8 +28,6 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 		},
 	});
 
-	const { user } = useUser();
-	const [leads, setLeads] = React.useState<LeadInterface[]>();
 	const [error, setError] = React.useState<string | null>(null);
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -55,7 +55,6 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 			}
 
 			const response = await api.salesAppointments.save(payload);
-			console.log(response);
 			successCallback();
 		} catch (e) {
 			setError(e.error);
@@ -69,7 +68,6 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 		try {
 			if (salesAppointment) {
 				const response = await api.salesAppointments.deleteSingle(salesAppointment.salesAppointmentID);
-				console.log(response);
 				successCallback();
 			}
 		} catch (e) {
@@ -77,7 +75,7 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 		}
 	};
 
-	const handleFileDrop = async () => {
+	const handleFileDrop = useCallback(async () => {
 		try {
 			const base64: any = await getBase64(acceptedFiles[0]);
 
@@ -89,28 +87,13 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 		} catch (e) {
 			console.log(e);
 		}
-	};
+	}, [acceptedFiles, setValue]);
 
 	useEffect(() => {
 		if (acceptedFiles.length > 0) {
 			handleFileDrop();
 		}
-	}, [acceptedFiles]);
-
-	const fetchLeads = async () => {
-		try {
-			if (!user) return;
-			const response = await api.leads.getAllByUserID(user.userID);
-
-			setLeads(response);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	React.useEffect(() => {
-		fetchLeads();
-	}, []);
+	}, [acceptedFiles, handleFileDrop]);
 
 	const files = acceptedFiles.map(file => (
 		<li key={file.name}>
@@ -227,19 +210,5 @@ const SalesAppointmentForm = ({ salesAppointment, onClose, successCallback }: Sa
 		</Form>
 	);
 };
-
-const StyledSection = styled.section``;
-
-const StyledDropArea = styled.div`
-	cursor: pointer;
-	border: 1px dashed #ccc;
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-
-	&:hover {
-		background-color: #f8f9fa;
-	}
-`;
 
 export default SalesAppointmentForm;

@@ -24,7 +24,6 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 
 	const onSubmit = async (data: any) => {
 		try {
-			console.log(data);
 			let payload: any;
 
 			// Add only dirty fields to payload
@@ -37,7 +36,6 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 			}
 
 			const response = await api.leads.save(payload);
-			console.log(response);
 			successCallback();
 		} catch (e) {
 			console.log(e);
@@ -48,7 +46,6 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 		try {
 			if (lead) {
 				const response = await api.leads.deleteSingle(lead.leadID);
-				console.log(response);
 				successCallback();
 			}
 		} catch (e) {

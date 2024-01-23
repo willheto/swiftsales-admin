@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Table from '../../components/Table/Table';
 import { Card, Modal } from 'react-bootstrap';
 import Content from '@src/components/SwiftSalesAdmin/Content';
@@ -16,21 +16,33 @@ const SalesAppointments = () => {
 	const [salesAppointments, setSalesAppointments] = React.useState<SalesAppointmentInterface[]>();
 	const [copiedStatus, setCopiedStatus] = React.useState<{ [key: number]: boolean }>({});
 	const [renewingStatus, setRenewingStatus] = React.useState<{ [key: number]: boolean }>({});
+	const [leads, setLeads] = React.useState<LeadInterface[]>();
 
-	const fetchSalesAppointments = async () => {
+	const fetchSalesAppointments = useCallback(async () => {
 		try {
 			if (!user) return;
 			const response = await api.salesAppointments.getAllByUserID(user.userID);
-
-			console.log(response);
 			setSalesAppointments(response);
 		} catch (e) {
 			console.log(e);
 		}
-	};
+	}, [user]);
+
+	const fetchLeads = useCallback(async () => {
+		try {
+			if (!user) return;
+			const response = await api.leads.getAllByUserID(user.userID);
+
+			setLeads(response);
+		} catch (e) {
+			console.log(e);
+		}
+	}, [user]);
+
 	React.useEffect(() => {
 		fetchSalesAppointments();
-	}, []);
+		fetchLeads();
+	}, [fetchSalesAppointments, fetchLeads]);
 
 	const MeetingUrlCopyButton = styled.button`
 		display: flex;
@@ -89,7 +101,11 @@ const SalesAppointments = () => {
 	const columns = [
 		{
 			name: 'leadID',
-			label: 'Lead ID',
+			label: 'Lead',
+			render: (salesAppointment: SalesAppointmentInterface) => {
+				const lead = leads?.find(lead => lead.leadID === salesAppointment.leadID);
+				return <span>{lead?.companyName}</span>;
+			},
 		},
 		{
 			name: 'notes',
@@ -171,26 +187,28 @@ const SalesAppointments = () => {
 
 	return (
 		<>
-			<SalesAppointmentFormModal
-				centered
-				size="lg"
-				show={editingSalesAppointment !== undefined}
-				onHide={() => setEditingSalesAppointment(undefined)}
-			>
-				<SalesAppointmentForm
-					salesAppointment={editingSalesAppointment}
-					onClose={() => setEditingSalesAppointment(undefined)}
-					successCallback={() => {
-						refetch();
-						setEditingSalesAppointment(undefined);
-					}}
-				/>
-			</SalesAppointmentFormModal>
+			{leads && (
+				<SalesAppointmentFormModal
+					centered
+					size="lg"
+					show={editingSalesAppointment !== undefined}
+					onHide={() => setEditingSalesAppointment(undefined)}
+				>
+					<SalesAppointmentForm
+						salesAppointment={editingSalesAppointment}
+						leads={leads}
+						onClose={() => setEditingSalesAppointment(undefined)}
+						successCallback={() => {
+							refetch();
+							setEditingSalesAppointment(undefined);
+						}}
+					/>
+				</SalesAppointmentFormModal>
+			)}
 			<Content>
-				<h5>Sales Appointments</h5>
-
-				<Card className="p-3 overflow-auto h-100">
-					<Card.Header className="p-0 pb-3">
+				<Card className="p-3 overflow-auto">
+					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
+						<h5 className="mb-0">Leads</h5>
 						<SwiftSalesButton
 							variant="primary"
 							size="small"

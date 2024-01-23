@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Table from '../../components/Table/Table';
 import { Card, Modal } from 'react-bootstrap';
 import Content from '@src/components/SwiftSalesAdmin/Content';
@@ -7,12 +7,13 @@ import api from '@src/api';
 import { useUser } from '@src/context/UserContext';
 import styled from 'styled-components';
 import LeadForm from './LeadForm';
+import LeadExport from './LeadExport';
 
 const Leads = () => {
 	const { user } = useUser();
 	const [leads, setLeads] = React.useState<LeadInterface[]>();
 
-	const fetchLeads = async () => {
+	const fetchLeads = useCallback(async () => {
 		try {
 			if (!user) return;
 			const response = await api.leads.getAllByUserID(user.userID);
@@ -21,10 +22,11 @@ const Leads = () => {
 		} catch (e) {
 			console.log(e);
 		}
-	};
+	}, [user]);
+
 	React.useEffect(() => {
 		fetchLeads();
-	}, []);
+	}, [fetchLeads]);
 
 	const columns = [
 		{
@@ -62,6 +64,8 @@ const Leads = () => {
 	];
 
 	const [editingLead, setEditingLead] = React.useState<LeadInterface | null>();
+	const [isImporting, setIsImporting] = React.useState<boolean>(false);
+
 	const handleAddEdit = (lead?: LeadInterface) => {
 		setEditingLead(lead);
 	};
@@ -72,6 +76,15 @@ const Leads = () => {
 
 	return (
 		<>
+			<LeadExportModal centered size="lg" show={isImporting} onHide={() => setIsImporting(false)}>
+				<LeadExport
+					onClose={() => setIsImporting(false)}
+					successCallback={() => {
+						refetch();
+						setIsImporting(false);
+					}}
+				/>
+			</LeadExportModal>
 			<LeadFormModal centered size="lg" show={editingLead !== undefined} onHide={() => setEditingLead(undefined)}>
 				<LeadForm
 					lead={editingLead}
@@ -83,13 +96,17 @@ const Leads = () => {
 				/>
 			</LeadFormModal>
 			<Content>
-				<h5>Leads</h5>
-
-				<Card className="p-3 overflow-auto h-100">
-					<Card.Header className="p-0 pb-3">
-						<SwiftSalesButton variant="primary" size="small" onClick={() => setEditingLead(null)}>
-							Create new
-						</SwiftSalesButton>
+				<Card className="p-3 overflow-auto">
+					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
+						<h5 className="mb-0">Leads</h5>
+						<div className="d-flex gap-2">
+							<SwiftSalesButton variant="primary" size="small" onClick={() => setIsImporting(true)}>
+								Import
+							</SwiftSalesButton>
+							<SwiftSalesButton variant="primary" size="small" onClick={() => setEditingLead(null)}>
+								Create new
+							</SwiftSalesButton>
+						</div>
 					</Card.Header>
 					<div className="overflow-auto h-100">
 						<Table resource={leads} columns={columns} handleAddEdit={handleAddEdit} />
@@ -100,5 +117,6 @@ const Leads = () => {
 	);
 };
 
+const LeadExportModal = styled(Modal)``;
 const LeadFormModal = styled(Modal)``;
 export default Leads;
