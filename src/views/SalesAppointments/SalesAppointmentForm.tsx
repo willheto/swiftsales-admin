@@ -30,6 +30,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 
 	const [error, setError] = React.useState<string | null>(null);
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+		maxSize: 10485760,
 		accept: {
 			image: ['.jpg', '.jpeg', '.png', '.gif'],
 			pdf: ['.pdf'],
@@ -54,7 +55,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 				payload = { ...payload, salesAppointmentID: salesAppointment.salesAppointmentID };
 			}
 
-			const response = await api.salesAppointments.save(payload);
+			await api.salesAppointments.save(payload);
 			successCallback();
 		} catch (e) {
 			setError(e.error);
@@ -67,7 +68,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 	const handleDelete = async () => {
 		try {
 			if (salesAppointment) {
-				const response = await api.salesAppointments.deleteSingle(salesAppointment.salesAppointmentID);
+				await api.salesAppointments.deleteSingle(salesAppointment.salesAppointmentID);
 				successCallback();
 			}
 		} catch (e) {
@@ -141,18 +142,22 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 							<p>Drag 'n' drop some files here, or click to select files</p>
 						</StyledDropArea>
 						<aside>
-							<Form.Text className="text-muted">
-								Allowed filetypes: .jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx
-							</Form.Text>{' '}
-							<Form.Group>
+							<div className="d-flex flex-column">
 								<Form.Text className="text-muted">
-									Interested in more filetypes? Contact us at{' '}
+									Allowed filetypes: .jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt,
+									.pptx
+								</Form.Text>
+								<Form.Text className="text-muted">Maximum filesize: 10 MB</Form.Text>
+							</div>
+							<Form.Group className="mt-2">
+								<Form.Text className="text-muted">
+									Interested in more filetypes or need more filesize capacity? Contact us at{' '}
 									<a href="mailto: info@swiftsales.fi">sales@swiftsales.fi</a>
 								</Form.Text>
 							</Form.Group>
 							{salesAppointmentFilesExist && (
 								<>
-									<Form.Label>Existing files</Form.Label>
+									<Form.Label className="mt-2">Existing files</Form.Label>
 									<ul>
 										{salesAppointment?.salesAppointmentFiles.map(salesAppointmentFile => (
 											<li key={salesAppointmentFile.salesAppointmentFileID}>

@@ -7,6 +7,7 @@ import Papa from 'papaparse';
 import SwiftSalesButton from '@src/components/SwiftSalesComponents/SwiftSalesComponents';
 import api from '@src/api';
 import { bytesToMegabytes } from '@src/utils/utils';
+import Alert from '@src/components/Alert/Alert';
 
 const LeadExport = ({ onClose, successCallback }) => {
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -16,7 +17,7 @@ const LeadExport = ({ onClose, successCallback }) => {
 		},
 	});
 
-	const [showMappingModal, setShowMappingModal] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
 	const [csvHeaders, setCsvHeaders] = useState([]);
 	const [csvData, setCsvData] = useState([]);
 	const { handleSubmit, register } = useForm();
@@ -29,15 +30,24 @@ const LeadExport = ({ onClose, successCallback }) => {
 				complete: result => {
 					setCsvHeaders(result.data[0]);
 					setCsvData(result.data.slice(1));
-					setShowMappingModal(true);
 				},
 				header: false,
 			});
 		}
 	}, [acceptedFiles]);
 
-	const onSubmit = async data => {
+	const isCompanyNameMapped = data => {
+		const columnMapValues = Object.values(data.columnMap);
+		return columnMapValues.includes('companyName');
+	};
+
+	const onSubmit = async (data: any) => {
 		try {
+			if (!isCompanyNameMapped(data)) {
+				setError('Company name must be mapped');
+				return;
+			}
+
 			setIsSubmitting(true);
 			const leads = csvData.map((row: any) => {
 				const lead = {};
@@ -79,8 +89,11 @@ const LeadExport = ({ onClose, successCallback }) => {
 	const renderMappingModal = () => {
 		return (
 			<div className="border-top pt-4">
-				<Form.Label>Step 2 - Map Columns</Form.Label>
-				<div className="d-flex flex-wrap mb-3">
+				<Form.Group className="d-flex flex-column mb-2">
+					<Form.Label className="mb-0">Step 2 - Map Columns</Form.Label>
+					<Form.Text className="mt-0">At least company name must be mapped</Form.Text>
+				</Form.Group>
+				<div className="d-flex flex-wrap">
 					{csvHeaders.map((header, index) => {
 						const isEven = index % 2 === 0;
 						return (
@@ -131,6 +144,7 @@ const LeadExport = ({ onClose, successCallback }) => {
 					</div>
 				)}
 				{csvHeaders.length > 0 && renderMappingModal()}
+				{error && <Alert type="danger" message={error} />}
 				<div className="d-flex gap-2">
 					<SwiftSalesButton
 						variant="primary"

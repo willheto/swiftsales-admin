@@ -36,6 +36,13 @@ const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 						</tr>
 					</thead>
 					<tbody>
+						{resource.length === 0 && (
+							<tr>
+								<td colSpan={columns.length} className="text-center">
+									No data found
+								</td>
+							</tr>
+						)}
 						{resource
 							?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 							.map((resource: any, index: number) => (

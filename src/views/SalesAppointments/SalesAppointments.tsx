@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import SalesAppointmentForm from './SalesAppointmentForm';
 import { IoCopyOutline, IoReloadOutline } from 'react-icons/io5';
 import useParseDate from '@src/hooks/useParseDate';
-import SearchField from '@src/components/SearchField/SearchField';
 import useSearch from '@src/hooks/useSearch';
 
 const SalesAppointments = () => {
@@ -19,6 +18,13 @@ const SalesAppointments = () => {
 	const [copiedStatus, setCopiedStatus] = React.useState<{ [key: number]: boolean }>({});
 	const [renewingStatus, setRenewingStatus] = React.useState<{ [key: number]: boolean }>({});
 	const [leads, setLeads] = React.useState<LeadInterface[]>();
+
+	const { renderSearchField, filteredResources } = useSearch(salesAppointments || [], {
+		searchColumns: ['notes'],
+		customResourcesForFiltering: {
+			leads: leads || [],
+		},
+	});
 
 	const fetchSalesAppointments = useCallback(async () => {
 		try {
@@ -186,13 +192,6 @@ const SalesAppointments = () => {
 	const refetch = async () => {
 		await fetchSalesAppointments();
 	};
-
-	const { renderSearchField, filteredResources } = useSearch(salesAppointments || [], {
-		searchColumns: ['notes'],
-		customResourcesForFiltering: {
-			leads: leads || [],
-		},
-	});
 
 	return (
 		<>
