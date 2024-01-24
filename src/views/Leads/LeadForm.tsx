@@ -56,7 +56,7 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 	return (
 		<Form className="p-4" onSubmit={handleSubmit(onSubmit)}>
 			<h5>{lead ? 'Edit' : 'Create'} lead</h5>
-			<div className="d-flex flex-column gap-2">
+			<div className="d-flex flex-column gap-2 mt-4">
 				<Form.Group>
 					<Form.Label>Company name</Form.Label>
 					<Form.Control type="text" {...register('companyName')} />
@@ -65,13 +65,15 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 					<Form.Label>Business ID</Form.Label>
 					<Form.Control type="text" {...register('businessID')} />
 				</Form.Group>
-				<Form.Group>
-					<Form.Label>Contact person</Form.Label>
-					<Form.Control type="text" {...register('contactPerson')} />
-				</Form.Group>
-				<Form.Group>
-					<Form.Label>Contact phone</Form.Label>
-					<Form.Control type="text" {...register('contactPhone')} />
+				<Form.Group className="d-flex gap-2">
+					<Form.Group className="w-50">
+						<Form.Label>Contact person</Form.Label>
+						<Form.Control type="text" {...register('contactPerson')} />
+					</Form.Group>
+					<Form.Group className="w-50">
+						<Form.Label>Contact phone</Form.Label>
+						<Form.Control type="text" {...register('contactPhone')} />
+					</Form.Group>
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Contact email</Form.Label>
@@ -83,7 +85,7 @@ const LeadForm = ({ lead, onClose, successCallback }: LeadFormProps) => {
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Description</Form.Label>
-					<Form.Control as="textarea" {...register('description')} />
+					<Form.Control rows={5} as="textarea" {...register('description')} />
 				</Form.Group>
 			</div>
 			<div className="d-flex gap-2 mt-4">

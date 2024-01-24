@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Table from '../../components/Table/Table';
 import { Card, Modal } from 'react-bootstrap';
 import Content from '@src/components/SwiftSalesAdmin/Content';
@@ -9,6 +9,8 @@ import styled from 'styled-components';
 import SalesAppointmentForm from './SalesAppointmentForm';
 import { IoCopyOutline, IoReloadOutline } from 'react-icons/io5';
 import useParseDate from '@src/hooks/useParseDate';
+import SearchField from '@src/components/SearchField/SearchField';
+import useSearch from '@src/hooks/useSearch';
 
 const SalesAppointments = () => {
 	const { user } = useUser();
@@ -185,6 +187,13 @@ const SalesAppointments = () => {
 		await fetchSalesAppointments();
 	};
 
+	const { renderSearchField, filteredResources } = useSearch(salesAppointments || [], {
+		searchColumns: ['notes'],
+		customResourcesForFiltering: {
+			leads: leads || [],
+		},
+	});
+
 	return (
 		<>
 			{leads && (
@@ -208,17 +217,20 @@ const SalesAppointments = () => {
 			<Content>
 				<Card className="p-3 overflow-auto">
 					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
-						<h5 className="mb-0">Leads</h5>
-						<SwiftSalesButton
-							variant="primary"
-							size="small"
-							onClick={() => setEditingSalesAppointment(null)}
-						>
-							Create new
-						</SwiftSalesButton>
+						<h5 className="mb-0">Sales Appointments</h5>
+						<div className="d-flex gap-2">
+							{renderSearchField()}
+							<SwiftSalesButton
+								variant="primary"
+								size="small"
+								onClick={() => setEditingSalesAppointment(null)}
+							>
+								Create new
+							</SwiftSalesButton>
+						</div>
 					</Card.Header>
 					<div className="overflow-auto h-100">
-						<Table resource={salesAppointments} columns={columns} handleAddEdit={handleAddEdit} />
+						<Table resource={filteredResources} columns={columns} handleAddEdit={handleAddEdit} />
 					</div>
 				</Card>
 			</Content>

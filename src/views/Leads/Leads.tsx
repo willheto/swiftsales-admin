@@ -8,6 +8,7 @@ import { useUser } from '@src/context/UserContext';
 import styled from 'styled-components';
 import LeadForm from './LeadForm';
 import LeadExport from './LeadExport';
+import useSearch from '@src/hooks/useSearch';
 
 const Leads = () => {
 	const { user } = useUser();
@@ -74,6 +75,10 @@ const Leads = () => {
 		await fetchLeads();
 	};
 
+	const { renderSearchField, filteredResources } = useSearch(leads || [], {
+		searchColumns: ['companyName', 'contactPerson', 'contactPhone', 'contactEmail', 'header'],
+	});
+
 	return (
 		<>
 			<LeadExportModal centered size="lg" show={isImporting} onHide={() => setIsImporting(false)}>
@@ -100,6 +105,8 @@ const Leads = () => {
 					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
 						<h5 className="mb-0">Leads</h5>
 						<div className="d-flex gap-2">
+							{renderSearchField()}
+
 							<SwiftSalesButton variant="primary" size="small" onClick={() => setIsImporting(true)}>
 								Import
 							</SwiftSalesButton>
@@ -109,7 +116,7 @@ const Leads = () => {
 						</div>
 					</Card.Header>
 					<div className="overflow-auto h-100">
-						<Table resource={leads} columns={columns} handleAddEdit={handleAddEdit} />
+						<Table resource={filteredResources} columns={columns} handleAddEdit={handleAddEdit} />
 					</div>
 				</Card>
 			</Content>

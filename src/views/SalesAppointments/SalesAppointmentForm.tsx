@@ -109,7 +109,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 	return (
 		<Form className="p-4" onSubmit={handleSubmit(onSubmit)}>
 			<h5>{salesAppointment ? 'Edit' : 'Create'} Sales appointment</h5>
-			<div className="d-flex flex-column gap-2">
+			<div className="d-flex flex-column gap-2 mt-4">
 				<Form.Group>
 					<Form.Label>Lead</Form.Label>
 					<Form.Select
