@@ -28,7 +28,7 @@ export const login = async ({ email, password }: { email: string; password: stri
 
 	// @ts-expect-error
 	if (!response?.token) {
-		throw new Error('Invalid response from the server');
+		throw new Error(response.data.error);
 	}
 	return response;
 };

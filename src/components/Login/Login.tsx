@@ -31,14 +31,12 @@ const Login = ({
 
 			if (response.token && response.user) {
 				localStorage.setItem('swiftsalesAuthToken', response.token);
-
 				setUser(response.user);
 			}
 		} catch (e) {
 			if (e.error) {
 				setLoginError(e.error);
 			}
-			console.log(e);
 		} finally {
 			setIsAuthenticating(false);
 		}

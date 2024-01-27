@@ -6,7 +6,6 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 const config: AxiosRequestConfig = {
 	baseURL: API_BASE_URL,
 	timeout: 60000,
-	withCredentials: true,
 };
 const axiosInstance: AxiosInstance = axios.create(config);
 
@@ -36,17 +35,6 @@ axiosInstance.interceptors.response.use(
 	},
 	error => {
 		if (error.response) {
-			// The request was made and the server responded with a status code
-			// that falls out of the range of 2xx
-			if (error.response.status === 401) {
-				if (error.response.data.error === 'Missing token' || error.response.data.error === 'Invalid token') {
-					// Redirect to login page if the token is invalid
-					// Only if the requested endpoint is users/auth
-					if (error.response.config.url !== '/users/auth') {
-						window.location.href = '/profile';
-					}
-				}
-			}
 			if (error.response.data) {
 				throw error.response.data;
 			}
