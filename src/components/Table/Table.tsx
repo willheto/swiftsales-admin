@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import React from 'react';
 import useParseDate from '@src/hooks/useParseDate';
 import { ScaleLoader } from 'react-spinners';
+import { IoChevronDownOutline, IoChevronUpOutline } from 'react-icons/io5';
 
 type TableProps = {
 	resource: any;
@@ -15,6 +16,36 @@ type TableProps = {
 
 const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 	const { parseDate } = useParseDate();
+	const [sortColumn, setSortColumn] = React.useState<string>('created_at');
+	const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
+
+	const sortByColumn = (column: string) => {
+		if (sortColumn === column) {
+			setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+		} else {
+			setSortColumn(column);
+			setSortDirection('asc');
+		}
+	};
+
+	const handleSort = (a: any, b: any) => {
+		// compare the first character of the string
+		const compare = (a: any, b: any) => {
+			if (a[sortColumn] < b[sortColumn]) {
+				return -1;
+			}
+			if (a[sortColumn] > b[sortColumn]) {
+				return 1;
+			}
+			return 0;
+		};
+
+		if (sortDirection === 'asc') {
+			return compare(a, b);
+		} else {
+			return compare(b, a);
+		}
+	};
 
 	return (
 		<StyledTable>
@@ -31,7 +62,20 @@ const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 					<thead>
 						<tr>
 							{columns.map(column => (
-								<th key={column.name}>{column.label}</th>
+								<th onClick={() => sortByColumn(column.name)} key={column.name}>
+									<div className={`d-flex align-items-center gap-1`}>
+										<span style={{ cursor: 'pointer' }}>{column.label}</span>
+										{sortColumn === column.name && (
+											<span>
+												{sortDirection === 'asc' ? (
+													<IoChevronUpOutline size={18} />
+												) : (
+													<IoChevronDownOutline size={18} />
+												)}
+											</span>
+										)}
+									</div>
+								</th>
 							))}
 						</tr>
 					</thead>
@@ -43,34 +87,32 @@ const Table = ({ resource, columns, handleAddEdit }: TableProps) => {
 								</td>
 							</tr>
 						)}
-						{resource
-							?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-							.map((resource: any, index: number) => (
-								<tr key={index} onClick={() => handleAddEdit(resource)}>
-									{columns.map(column => {
-										if (column.render) {
-											return <td key={column.name}>{column.render(resource)}</td>;
-										}
-										if (
-											column.name === 'created_at' ||
-											column.name === 'updated_at' ||
-											column.name === 'meetingExpiryTime'
-										) {
-											return (
-												<td key={column.name}>
-													{resource[column.name] ? parseDate(resource[column.name]) : '-'}
-												</td>
-											);
-										} else {
-											return (
-												<td key={column.name}>
-													{resource[column.name] === '' ? '-' : resource[column.name]}
-												</td>
-											);
-										}
-									})}
-								</tr>
-							))}
+						{resource?.sort(handleSort).map((resource: any, index: number) => (
+							<tr key={index} onClick={() => handleAddEdit(resource)}>
+								{columns.map(column => {
+									if (column.render) {
+										return <td key={column.name}>{column.render(resource)}</td>;
+									}
+									if (
+										column.name === 'created_at' ||
+										column.name === 'updated_at' ||
+										column.name === 'meetingExpiryTime'
+									) {
+										return (
+											<td key={column.name}>
+												{resource[column.name] ? parseDate(resource[column.name]) : '-'}
+											</td>
+										);
+									} else {
+										return (
+											<td key={column.name}>
+												{resource[column.name] === '' ? '-' : resource[column.name]}
+											</td>
+										);
+									}
+								})}
+							</tr>
+						))}
 					</tbody>
 				</>
 			)}
