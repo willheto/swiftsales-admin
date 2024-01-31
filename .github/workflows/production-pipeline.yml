@@ -2,9 +2,9 @@ name: Node.js CI and Deploy
 
 on:
     push:
-        branches: ['dev']
+        branches: ['master']
     pull_request:
-        branches: ['dev']
+        branches: ['master']
 
 jobs:
     build-and-deploy:
@@ -25,20 +25,20 @@ jobs:
 
             - run: npm install
 
-            - name: build-dev
-              run: npm run build-development
+            - name: build-production
+              run: npm run build-production
 
             - name: Install sshpass
               run: sudo apt-get update && sudo apt-get install -y sshpass
 
             - name: Remove old build artifacts
               run: |
-                  sshpass -p 'TA4bgvMmMokqrKLOM1je' ssh -o StrictHostKeyChecking=no root@146.190.56.16 'cd /var/www && rm -r dev-swiftsales-admin && mkdir dev-swiftsales-admin'
+                  sshpass -p 'EN7PAXVhV67jIGiPSLOB' ssh -o StrictHostKeyChecking=no root@146.190.25.3 'cd /var/www && rm -r swiftsales-admin && mkdir swiftsales-admin'
 
             # Transfer build artifacts to the VM using sshpass
             - name: Transfer Build Artifacts
               run: |
-                  sshpass -p 'TA4bgvMmMokqrKLOM1je' scp -o StrictHostKeyChecking=no -r dist/* root@146.190.56.16:/var/www/dev-swiftsales-admin
+                  sshpass -p 'EN7PAXVhV67jIGiPSLOB' scp -o StrictHostKeyChecking=no -r dist/* root@146.190.25.3:/var/www/swiftsales-admin
 
             - name: Get commit message
               id: commit_message
@@ -51,6 +51,6 @@ jobs:
               with:
                 to: -4099101573
                 token: 6949787786:AAHm2XxKc9lb-IPvgHcPI3uxJBZ2XE0SHGM
-                message: "Swiftsales development admin päivitetty. \n\nTehdyt muutokset: ${{ steps.commit_message.outputs.message }}"
+                message: "Swiftsales production admin päivitetty. \n\nTehdyt muutokset: ${{ steps.commit_message.outputs.message }}"
 
             
