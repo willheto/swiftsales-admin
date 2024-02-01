@@ -26,11 +26,14 @@ const Login = ({
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		e.stopPropagation();
+		console.log('yeah');
 		try {
 			setIsAuthenticating(true);
 			const response = await login(loginData);
 
 			if (response.token && response.user) {
+				console.log('setting user');
 				localStorage.setItem('swiftsalesAuthToken', response.token);
 				setUser(response.user);
 			}
@@ -55,7 +58,7 @@ const Login = ({
 
 	if (isMobile) {
 		return (
-			<MobileLogin>
+			<MobileLogin onSubmit={handleSubmit}>
 				<div>
 					<div className="d-flex align-items-center gap-3 mb-4">
 						<GrSwift size={30} />
