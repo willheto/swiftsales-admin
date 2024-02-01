@@ -2,7 +2,7 @@ export const bytesToMegabytes = (bytes: number): string => {
 	return (bytes / (1024 * 1024)).toFixed(3);
 };
 
-export const getBase64 = async (file: any) => {
+export const getBase64 = async (file: any): Promise<string> => {
 	try {
 		const base64image = await new Promise((resolve, reject) => {
 			const fileReader = new FileReader();
@@ -10,10 +10,13 @@ export const getBase64 = async (file: any) => {
 			fileReader.onload = () => resolve(fileReader.result);
 			fileReader.onerror = error => reject(error);
 		});
-		return base64image;
+		if (typeof base64image === 'string') {
+			return base64image;
+		}
+		throw new Error('Error converting file to base64');
 	} catch (error) {
 		console.error(error);
-		return;
+		return '';
 	}
 };
 

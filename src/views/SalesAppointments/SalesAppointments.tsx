@@ -47,27 +47,10 @@ const SalesAppointments = () => {
 		}
 	}, [user]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		fetchSalesAppointments();
 		fetchLeads();
 	}, [fetchSalesAppointments, fetchLeads]);
-
-	const MeetingUrlCopyButton = styled.button`
-		display: flex;
-
-		align-items: center;
-		gap: 5px;
-		white-space: nowrap;
-		background: transparent;
-		border: 1px solid #ccc;
-		padding: 5px 10px;
-		border-radius: 5px;
-		cursor: pointer;
-
-		&:hover {
-			background: #ccc;
-		}
-	`;
 
 	const handleCopyMeetingUrl = async (e: any, salesAppointment: SalesAppointmentInterface) => {
 		e.stopPropagation();
@@ -243,6 +226,23 @@ const SpinningRenewIcon = styled.div`
 	${props =>
 		props.theme.spin &&
 		'animation: spin 1s linear infinite; @keyframes spin { 100% { transform: rotate(360deg); }}'};
+`;
+
+const MeetingUrlCopyButton = styled.button`
+	display: flex;
+
+	align-items: center;
+	gap: 5px;
+	white-space: nowrap;
+	background: transparent;
+	border: 1px solid #ccc;
+	padding: 5px 10px;
+	border-radius: 5px;
+	cursor: pointer;
+
+	&:hover {
+		background: #ccc;
+	}
 `;
 
 const SalesAppointmentFormModal = styled(Modal)``;
