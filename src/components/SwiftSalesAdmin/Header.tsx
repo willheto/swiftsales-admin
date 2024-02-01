@@ -1,21 +1,46 @@
 import { useUser } from '@src/context/UserContext';
+import useMobile from '@src/hooks/useMobile';
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { GrSwift } from 'react-icons/gr';
+import { IoMenuOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
-const Header = () => {
+const Header = ({
+	isMobileMenuOpen,
+	setIsMobileMenuOpen,
+}: {
+	isMobileMenuOpen: boolean;
+	setIsMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
 	const { user } = useUser();
 
 	const handleLogout = () => {
 		localStorage.removeItem('swiftsalesAuthToken');
 		window.location.reload();
 	};
+	const isMobile = useMobile();
+
+	const handleOpenMenu = () => {
+		setIsMobileMenuOpen(prevState => !prevState);
+	};
+
 	return (
 		<HeaderContainer>
 			<div className="d-flex align-items-center gap-2">
+				{isMobile && (
+					<span
+						id="menu-icon"
+						onClick={handleOpenMenu}
+						style={{
+							cursor: 'pointer',
+						}}
+					>
+						<IoMenuOutline id="menu-icon" size={25} />
+					</span>
+				)}
 				<GrSwift size={25} fill="#102526" />
-				<h5 className="mb-0">Swiftsales Admin</h5>
+				<h5 className="mb-0">Swiftsales</h5>
 			</div>
 			<Dropdown>
 				<Dropdown.Toggle>{user?.firstName}</Dropdown.Toggle>

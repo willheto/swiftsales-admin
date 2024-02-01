@@ -102,11 +102,12 @@ const Leads = () => {
 			</LeadFormModal>
 			<Content>
 				<Card className="p-3 overflow-auto">
-					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
-						<h5 className="mb-0">Leads</h5>
-						<div className="d-flex gap-2">
+					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+						<div className="d-flex gap-2 justify-content-between flex-fill flex-wrap">
+							<h5 className="mb-0">Leads</h5>
 							{renderSearchField()}
-
+						</div>
+						<div className="d-flex gap-2 justify-content-end">
 							<SwiftSalesButton variant="primary" size="small" onClick={() => setIsImporting(true)}>
 								Import
 							</SwiftSalesButton>

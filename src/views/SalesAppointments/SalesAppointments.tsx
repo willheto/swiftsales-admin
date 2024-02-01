@@ -101,6 +101,13 @@ const SalesAppointments = () => {
 		{
 			name: 'notes',
 			label: 'Notes',
+			render: (salesAppointment: SalesAppointmentInterface) => {
+				const notes = salesAppointment.notes || '';
+				if (notes.length > 50) {
+					return <span>{notes?.substring(0, 50)}...</span>;
+				}
+				return <span>{salesAppointment.notes}</span>;
+			},
 		},
 		{
 			name: 'meetingUrl',
@@ -198,10 +205,12 @@ const SalesAppointments = () => {
 			)}
 			<Content>
 				<Card className="p-3 overflow-auto">
-					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
-						<h5 className="mb-0">Sales Appointments</h5>
-						<div className="d-flex gap-2">
+					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+						<div className="d-flex gap-2 justify-content-between flex-fill flex-wrap">
+							<h5 className="mb-0">Sales Appointments</h5>
 							{renderSearchField()}
+						</div>
+						<div className="d-flex gap-2 justify-content-end">
 							<SwiftSalesButton
 								variant="primary"
 								size="small"

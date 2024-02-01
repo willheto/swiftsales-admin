@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useUser } from '@src/context/UserContext';
 import SwiftSalesAdmin from '../SwiftSalesAdmin/SwiftSalesAdmin';
 import { authenticate } from '@src/api/services/authService';
+import useMobile from '@src/hooks/useMobile';
 
 const Root = () => {
 	const { user, setUser } = useUser();
@@ -32,13 +33,17 @@ const Root = () => {
 		}
 	}, [tryToAuthenticate, user]);
 
+	const isMobile = useMobile();
+
 	return !user ? (
 		<AuthenticationContainer>
 			<Login isAuthenticating={isAuthenticating} setIsAuthenticating={setIsAuthenticating} />
-			<SalesTextContainer>
-				<h3 style={{ color: 'white' }}>Revolutionize your B2B sales game with our streamlined app.</h3>
-				Join now to simplify your sales process and boost your success.
-			</SalesTextContainer>
+			{!isMobile && (
+				<SalesTextContainer>
+					<h3 style={{ color: 'white' }}>Revolutionize your B2B sales game with our streamlined app.</h3>
+					Join now to simplify your sales process and boost your success.
+				</SalesTextContainer>
+			)}
 		</AuthenticationContainer>
 	) : (
 		<SwiftSalesAdmin />

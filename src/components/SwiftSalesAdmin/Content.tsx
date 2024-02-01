@@ -1,8 +1,10 @@
+import useMobile from '@src/hooks/useMobile';
 import React from 'react';
 import styled from 'styled-components';
 
 const Content = ({ children }: { children: React.ReactNode }) => {
-	return <MainContentContainer>{children}</MainContentContainer>;
+	const isMobile = useMobile();
+	return <MainContentContainer theme={{ isMobile }}>{children}</MainContentContainer>;
 };
 
 const MainContentContainer = styled.div`
@@ -10,7 +12,7 @@ const MainContentContainer = styled.div`
 	background-repeat: no-repeat;
 	background-position: center;
 	padding: 1rem;
-	width: calc(100% - 200px);
+	width: calc(100% - ${props => (props.theme.isMobile ? '0px' : '200px')});
 	display: flex;
 	flex-direction: column;
 	height: 100%;

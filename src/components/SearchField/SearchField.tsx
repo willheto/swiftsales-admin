@@ -22,7 +22,7 @@ const StyledInput = styled.input`
 	border: 1px solid #ccc;
 	font-size: 1rem;
 	height: 28px;
-	width: 250px;
+	max-width: 250px;
 `;
 
 export default SearchField;

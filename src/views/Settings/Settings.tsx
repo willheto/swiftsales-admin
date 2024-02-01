@@ -9,6 +9,7 @@ import { Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Alert from '../../components/Alert/Alert';
 import OrganizationSettings from './OrganizationSettings';
+import useMobile from '@src/hooks/useMobile';
 
 const Settings = () => {
 	const {
@@ -84,12 +85,14 @@ const Settings = () => {
 		}
 	};
 
+	const isMobile = useMobile();
+
 	if (!user) return null;
 
 	return (
 		<Content>
 			<div className="d-flex flex-column gap-3">
-				<Card className="p-3 overflow-auto w-75 align-self-center">
+				<Card className={`p-3 overflow-auto ${isMobile ? 'w-100' : 'w-75'} align-self-center`}>
 					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
 						<h5 className="mb-0">User</h5>
 					</Card.Header>

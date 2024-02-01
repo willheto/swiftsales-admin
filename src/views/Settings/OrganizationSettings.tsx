@@ -7,6 +7,7 @@ import { useUser } from '@src/context/UserContext';
 import { useForm } from 'react-hook-form';
 import Badge from '../../components/Badge/Badge';
 import { capitalizeFirstLetter } from '@src/utils/utils';
+import useMobile from '@src/hooks/useMobile';
 
 const OrganizationSettings = () => {
 	const { user } = useUser();
@@ -53,10 +54,12 @@ const OrganizationSettings = () => {
 		}
 	};
 
+	const isMobile = useMobile();
+
 	if (!organization) return null;
 
 	return (
-		<Card className="p-3 overflow-auto w-75 align-self-center">
+		<Card className={`p-3 overflow-auto ${isMobile ? 'w-100' : 'w-75'} align-self-center`}>
 			<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
 				<h5 className="mb-0">Organization</h5>
 			</Card.Header>

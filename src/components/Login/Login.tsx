@@ -5,6 +5,7 @@ import { GrSwift } from 'react-icons/gr';
 import { SwiftSalesButton } from '../SwiftSalesComponents/SwiftSalesComponents';
 import { login } from '@src/api/services/authService';
 import { useUser } from '@src/context/UserContext';
+import useMobile from '@src/hooks/useMobile';
 
 const Login = ({
 	isAuthenticating,
@@ -50,6 +51,43 @@ const Login = ({
 		setLoginData({ ...loginData, password: e.target.value });
 	};
 
+	const isMobile = useMobile();
+
+	if (isMobile) {
+		return (
+			<MobileLogin>
+				<div>
+					<div className="d-flex align-items-center gap-3 mb-4">
+						<GrSwift size={30} />
+						<h2 className="mb-0">Swiftsales Admin</h2>
+					</div>
+					<div className="d-flex flex-column mt-4 gap-2">
+						<h3>Login in to your account</h3>
+						<Form.Group style={{ width: '300px' }}>
+							<Form.Label>Email</Form.Label>
+							<Form.Control type="email" placeholder="Enter email" onChange={handleEmailChange} />
+						</Form.Group>
+						<Form.Group style={{ width: '300px' }}>
+							<Form.Label>Password</Form.Label>
+							<Form.Control type="password" onChange={handlePasswordChange} />
+						</Form.Group>
+						{loginError && <div className="text-danger">{loginError}</div>}
+
+						{isAuthenticating ? (
+							<SwiftSalesButton variant="primary" size="big" type="submit" disabled>
+								Logging in...
+							</SwiftSalesButton>
+						) : (
+							<SwiftSalesButton variant="primary" size="big" type="submit">
+								Login
+							</SwiftSalesButton>
+						)}
+					</div>
+				</div>
+			</MobileLogin>
+		);
+	}
+
 	return (
 		<LoginContainer onSubmit={handleSubmit}>
 			<div className="d-flex align-items-center gap-3 mb-4">
@@ -81,6 +119,17 @@ const Login = ({
 		</LoginContainer>
 	);
 };
+
+const MobileLogin = styled.form`
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+	padding: 60px 0;
+`;
 
 const LoginContainer = styled.form`
 	display: flex;

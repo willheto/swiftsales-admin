@@ -1,10 +1,11 @@
+import useMobile from '@src/hooks/useMobile';
 import React, { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Sidebar = () => {
-	// get current path when it changes
 	const location = useLocation();
+	const isMobile = useMobile(); // Use the hook
 
 	const isCurrentPath = (path: string) => {
 		return location.pathname === path;
@@ -19,7 +20,7 @@ const Sidebar = () => {
 	}, [location.pathname, navigate]);
 
 	return (
-		<SidebarContainer>
+		<SidebarContainer theme={{ isMobile }} id="sidebar">
 			<StyledLink theme={{ isCurrentPath: isCurrentPath('/leads') }} to="/leads">
 				Leads
 			</StyledLink>
@@ -32,6 +33,7 @@ const Sidebar = () => {
 		</SidebarContainer>
 	);
 };
+
 const StyledLink = styled(Link)`
 	margin: 0px;
 	appearance: none;
@@ -70,6 +72,9 @@ const SidebarContainer = styled.div`
 	min-width: 200px;
 	max-width: 200px;
 	background-color: #fbfbfb;
+	transition: all 0.3s ease 0s;
+	${props => props.theme.isMobile && 'width: 0px !important;'}
+	${props => props.theme.isMobile && 'min-width: 0px !important;'}
 `;
 
 export default Sidebar;
