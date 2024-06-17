@@ -34,6 +34,8 @@ interface SalesAppointmentInterface {
 	notes: string | null;
 	meetingUrl: string;
 	isCustomerAllowedToShareFiles: boolean;
+	isSalesAppointmentSecuredWithPassword: boolean;
+	password: string | null;
 	salesAppointmentFiles: SalesAppointmentFileInterface[];
 	meetingExpiryTime?: string;
 	created_at: string;

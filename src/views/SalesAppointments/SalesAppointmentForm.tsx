@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import SalesAppointmentFiles from './SalesAppointmentFiles';
+import { BsArrowReturnRight } from 'react-icons/bs';
 
 type SalesAppointmentFormProps = {
 	salesAppointment?: SalesAppointmentInterface | null;
@@ -105,13 +106,39 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 					<Form.Control type="text" as="textarea" rows={6} {...register('notes')} />
 				</Form.Group>
 				<SalesAppointmentFiles methods={methods} />
+				<Form.Label>Settings</Form.Label>
 				<Form.Group>
-					<Form.Label>Settings</Form.Label>
 					<Form.Switch
 						id="isCustomerAllowedToShareFiles"
 						label="Is customer allowed to share files?"
 						{...register('isCustomerAllowedToShareFiles')}
 					/>
+				</Form.Group>
+				<Form.Group className="d-flex flex-column gap-2">
+					<Form.Switch
+						id="isSalesAppointmentSecuredWithPassword"
+						label="Is sales appointment secured with password?"
+						{...register('isSalesAppointmentSecuredWithPassword')}
+					/>
+					{methods.watch('isSalesAppointmentSecuredWithPassword') && (
+						<div className="d-flex align-items-center gap-2">
+							<div className="d-flex flex-column">
+								<Form.Label className="mb-0" style={{ marginLeft: '40px' }}>
+									Password
+								</Form.Label>
+								<div className="d-flex align-items-center gap-2">
+									<BsArrowReturnRight size="30" />
+									<Form.Control
+										maxLength={100}
+										className="w-50"
+										type="text"
+										placeholder="Password"
+										{...register('password', { required: true })}
+									/>
+								</div>
+							</div>
+						</div>
+					)}
 				</Form.Group>
 			</div>
 			{error && <div className="text-danger">{error}</div>}

@@ -13,7 +13,7 @@ const Login = ({
 }: {
 	isAuthenticating: boolean;
 	setIsAuthenticating: (isAuthenticating: boolean) => void;
-}) => {
+}): JSX.Element => {
 	const { setUser, user } = useUser();
 	const [loginError, setLoginError] = React.useState<string | null>(null);
 	const [loginData, setLoginData] = React.useState<{
@@ -24,33 +24,29 @@ const Login = ({
 		password: '',
 	});
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log('yeah');
 		try {
 			setIsAuthenticating(true);
 			const response = await login(loginData);
 
 			if (response.token && response.user) {
-				console.log('setting user');
 				localStorage.setItem('swiftsalesAuthToken', response.token);
 				setUser(response.user);
 			}
-		} catch (e) {
-			if (e.error) {
-				setLoginError(e.error);
-			}
+		} catch (exception: any) {
+			setLoginError(exception.message);
 		} finally {
 			setIsAuthenticating(false);
 		}
 	};
 
-	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setLoginData({ ...loginData, email: e.target.value });
 	};
 
-	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setLoginData({ ...loginData, password: e.target.value });
 	};
 

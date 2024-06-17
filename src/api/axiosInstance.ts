@@ -40,16 +40,7 @@ axiosInstance.interceptors.response.use(
 			}
 			throw error.response;
 		} else if (error.request) {
-			// The request was made but no response was received
-			// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-			// http.ClientRequest in node.js
-			let error = {
-				error: 'There seems to be a connection problem.',
-			};
-			throw error;
-			// throw error.request
-		} else {
-			// Something happened in setting up the request that triggered an Error
+			throw new Error('There seems to be a connection problem.');
 		}
 		throw error;
 	},
