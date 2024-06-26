@@ -4,53 +4,26 @@ import SwiftSalesButton from '@src/components/SwiftSalesComponents/SwiftSalesCom
 import { useUser } from '@src/context/UserContext';
 import { getDirtyValues } from '@src/utils/utils';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Modal } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Alert from '../../components/Alert/Alert';
 import OrganizationSettings from './OrganizationSettings';
 import useMobile from '@src/hooks/useMobile';
+import ChangePassword from './ChangePassword';
 
 const Settings = () => {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors, dirtyFields },
 	} = useForm();
 
 	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
-	const { user, setUser } = useUser();
+	const [showPasswordChangeModal, setShowPasswordChangeModal] = React.useState<boolean>(false);
 
-	const timeZones = [
-		'Europe/Helsinki',
-		'Europe/Stockholm',
-		'Europe/London',
-		'Europe/Paris',
-		'Europe/Berlin',
-		'Europe/Rome',
-		'Europe/Madrid',
-		'Europe/Warsaw',
-		'Europe/Prague',
-		'Europe/Athens',
-		'Europe/Istanbul',
-		'Europe/Moscow',
-		'Europe/Kiev',
-		'Europe/Volgograd',
-		'Europe/Minsk',
-		'Europe/Bucharest',
-		'Europe/Amsterdam',
-		'Europe/Dublin',
-		'Europe/Brussels',
-		'Europe/Vienna',
-		'Europe/Zurich',
-		'Europe/Oslo',
-		'Europe/Copenhagen',
-		'Europe/Bratislava',
-		'Europe/Sofia',
-		'Europe/Budapest',
-		'Europe/Ljubljana',
-		'Europe/Zagreb',
-	];
+	const { user, setUser } = useUser();
 
 	const [alert, setAlert] = React.useState<{
 		type: AlertType;
@@ -75,9 +48,11 @@ const Settings = () => {
 				type: 'success',
 				message: 'Settings saved successfully',
 			});
+			reset();
 			setTimeout(() => {
 				setAlert(null);
 			}, 3000);
+			reset;
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -91,6 +66,9 @@ const Settings = () => {
 
 	return (
 		<Content>
+			<Modal show={showPasswordChangeModal} onHide={() => setShowPasswordChangeModal(false)} centered>
+				<ChangePassword onSuccess={() => setShowPasswordChangeModal(false)} />
+			</Modal>
 			<div className="d-flex flex-column gap-3">
 				<Card className={`p-3 overflow-auto ${isMobile ? 'w-100' : 'w-75'} align-self-center`}>
 					<Card.Header className="p-0 pb-3 d-flex justify-content-between align-items-center">
@@ -115,13 +93,13 @@ const Settings = () => {
 										defaultValue={user.firstName}
 									/>
 								</Form.Group>
-
 								<Form.Group>
 									<Form.Label>Last Name</Form.Label>
 									<Form.Control type="text" {...register('lastName')} defaultValue={user.lastName} />
 								</Form.Group>
 							</Form.Group>
-							<Form.Group>
+
+							{/*<Form.Group>
 								<Form.Label>Time Zone</Form.Label>
 								<Form.Select {...register('timeZone')} defaultValue={user.timeZone}>
 									<option value="">Select time zone</option>
@@ -131,11 +109,11 @@ const Settings = () => {
 										</option>
 									))}
 								</Form.Select>
-							</Form.Group>
+							</Form.Group>*/}
 						</div>
 
 						{alert && <Alert type={alert.type} message={alert.message} />}
-						<Form.Group className="mt-3">
+						<Form.Group className="mt-3 d-flex gap-2">
 							<SwiftSalesButton
 								variant="primary"
 								size="small"
@@ -143,6 +121,13 @@ const Settings = () => {
 								disabled={isSubmitting || Object.keys(dirtyFields).length === 0}
 							>
 								{isSubmitting ? 'Saving...' : 'Save'}
+							</SwiftSalesButton>
+							<SwiftSalesButton
+								variant="primary"
+								size="small"
+								onClick={() => setShowPasswordChangeModal(true)}
+							>
+								Change Password
 							</SwiftSalesButton>
 						</Form.Group>
 					</Form>

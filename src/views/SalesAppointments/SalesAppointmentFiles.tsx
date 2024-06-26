@@ -91,12 +91,12 @@ const SalesAppointmentFiles = ({ methods }) => {
 						</Form.Text>
 						<Form.Text className="text-muted">Maximum filesize: 10 MB</Form.Text>
 					</div>
-					<Form.Group className="mt-2">
+					{/*<Form.Group className="mt-2">
 						<Form.Text className="text-muted">
 							Interested in more filetypes or need more filesize capacity? Contact us at{' '}
 							<a href="mailto: info@swiftsales.fi">sales@swiftsales.fi</a>
 						</Form.Text>
-					</Form.Group>
+					</Form.Group>*/}
 					{existingSalesAppointmentFiles.length > 0 && (
 						<>
 							<Form.Label className="mt-2">Existing files</Form.Label>

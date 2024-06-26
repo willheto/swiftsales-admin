@@ -28,7 +28,8 @@ export const SwiftSalesButton = ({
 const BaseButton = styled.button`
 	font-size: ${props => (props.theme.size === 'small' ? '13px' : '16px')};
 	height: ${props => (props.theme.size === 'small' ? '28px' : '40px')};
-	width: ${props => (props.theme.size === 'small' ? '105px' : '120px')};
+	width: fit-content;
+	padding: 0 20px;
 	background-color: ${props =>
 		props.theme.variant === 'primary'
 			? '#102526;'

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import Root from './components/Root/Root';
 import './index.scss';
+import "react-datepicker/dist/react-datepicker.css";
 import { UserProvider } from './context/UserContext';
 
 const rootElement = document.getElementById('root');

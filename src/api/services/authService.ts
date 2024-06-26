@@ -53,3 +53,20 @@ export const register = async ({ email, password }: { email: string; password: s
 	}
 	return response;
 };
+
+export const checkPassword = async (payload: { userID: number; password: string }) => {
+	const { userID, password } = payload;
+	if (!userID || !password) {
+		throw {
+			details: 'Missing parameters, check posted data.',
+		};
+	}
+
+	let url = `${API_BASE_URL}/users/check-password`;
+
+	let options = {
+		timeout: 60000,
+	};
+
+	return axiosInstance.post(url, { userID, password }, options);
+};

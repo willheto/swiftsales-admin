@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import SalesAppointmentFiles from './SalesAppointmentFiles';
-import { BsArrowReturnRight } from 'react-icons/bs';
+import DatePicker from '@src/components/DatePicker/DatePicker';
+import fi from 'date-fns/locale/fi';
+import useParseDate from '@src/hooks/useParseDate';
+import { DateTime } from 'luxon';
 
 type SalesAppointmentFormProps = {
 	salesAppointment?: SalesAppointmentInterface | null;
@@ -21,6 +24,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 	});
 
 	const {
+		setValue,
 		register,
 		handleSubmit,
 		formState: { dirtyFields },
@@ -77,6 +81,12 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 		}
 	};
 
+	const getCurrentDateTime = () => {
+		const date = new Date();
+		date.setMinutes(date.getMinutes() + 15);
+		return date;
+	};
+
 	if (!leads) return null;
 
 	return (
@@ -104,9 +114,40 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 				<Form.Group>
 					<Form.Label>Notes</Form.Label>
 					<Form.Control type="text" as="textarea" rows={6} {...register('notes')} />
+					<Form.Text className="text-muted">These notes will be shown to everyone in the meeting.</Form.Text>
+				</Form.Group>
+				<Form.Group className="d-flex flex-column">
+					<Form.Label>Meeting start time</Form.Label>
+					<DatePicker
+						showYearDropdown
+						id="timeStart"
+						timeZone={'Europe/Helsinki'}
+						value={methods.watch('timeStart')}
+						onChange={date =>
+							setValue('timeStart', date, {
+								shouldDirty: true,
+							})
+						}
+						autoComplete="on"
+						showTimeSelect="true"
+						required={true}
+					/>
+				</Form.Group>
+				<Form.Group className="d-flex flex-column">
+					<Form.Label>Meeting end time</Form.Label>
+					<DatePicker
+						showYearDropdown
+						id="timeEnd"
+						timeZone={'Europe/Helsinki'}
+						value={methods.watch('timeEnd')}
+						onChange={date => setValue('timeEnd', date, { shouldDirty: true })}
+						autoComplete="on"
+						showTimeSelect="true"
+						required={true}
+					/>
 				</Form.Group>
 				<SalesAppointmentFiles methods={methods} />
-				<Form.Label>Settings</Form.Label>
+				{/*<Form.Label>Settings</Form.Label>
 				<Form.Group>
 					<Form.Switch
 						id="isCustomerAllowedToShareFiles"
@@ -139,7 +180,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 							</div>
 						</div>
 					)}
-				</Form.Group>
+				</Form.Group>*/}
 			</div>
 			{error && <div className="text-danger">{error}</div>}
 			<div className="d-flex gap-2 mt-4">

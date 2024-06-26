@@ -70,25 +70,6 @@ const SalesAppointments = () => {
 		}, 2000); // 2 seconds delay
 	};
 
-	const handleMeetingUrlRenew = async (e: any, salesAppointment: SalesAppointmentInterface) => {
-		e.stopPropagation();
-		try {
-			setRenewingStatus(prevStatus => ({
-				...prevStatus,
-				[salesAppointment.salesAppointmentID]: true,
-			}));
-			await api.salesAppointments.renewMeetingUrl(salesAppointment.salesAppointmentID);
-			fetchSalesAppointments();
-		} catch (e) {
-			console.log(e);
-		} finally {
-			setRenewingStatus(prevStatus => ({
-				...prevStatus,
-				[salesAppointment.salesAppointmentID]: false,
-			}));
-		}
-	};
-
 	const columns = [
 		{
 			name: 'leadID',
@@ -113,25 +94,6 @@ const SalesAppointments = () => {
 			name: 'meetingUrl',
 			label: 'Meeting Url',
 			render: (salesAppointment: SalesAppointmentInterface) => {
-				if (!salesAppointment.meetingUrl) {
-					return (
-						<MeetingUrlCopyButton
-							onClick={e => {
-								handleMeetingUrlRenew(e, salesAppointment);
-							}}
-							disabled={renewingStatus[salesAppointment.salesAppointmentID] || false}
-						>
-							<SpinningRenewIcon
-								theme={{
-									spin: renewingStatus[salesAppointment.salesAppointmentID] || false,
-								}}
-							>
-								<IoReloadOutline />
-							</SpinningRenewIcon>
-							{renewingStatus[salesAppointment.salesAppointmentID] ? 'Renewing...' : 'Renew meeting url'}
-						</MeetingUrlCopyButton>
-					);
-				}
 				const isCopied = copiedStatus[salesAppointment.salesAppointmentID] || false;
 				return (
 					<MeetingUrlCopyButton
@@ -146,22 +108,18 @@ const SalesAppointments = () => {
 			},
 		},
 		{
-			name: 'meetingExpiryTime',
-			label: 'Meeting Expiry Time',
+			name: 'timeStart',
+			label: 'Time Start',
 			render: (salesAppointment: SalesAppointmentInterface) => {
-				return salesAppointment.meetingExpiryTime ? (
-					<span>{parseDate(salesAppointment.meetingExpiryTime)}</span>
-				) : (
-					<span>Expired</span>
-				);
+				return <span>{parseDate(salesAppointment.timeStart)}</span>;
 			},
 		},
 
 		{
-			name: 'isCustomerAllowedToShareFiles',
-			label: 'Is Customer Allowed To Share Files',
+			name: 'timeEnd',
+			label: 'Time End',
 			render: (salesAppointment: SalesAppointmentInterface) => {
-				return salesAppointment.isCustomerAllowedToShareFiles ? <span>Yes</span> : <span>No</span>;
+				return <span>{parseDate(salesAppointment.timeEnd)}</span>;
 			},
 		},
 		{

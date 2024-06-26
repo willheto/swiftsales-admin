@@ -12,6 +12,7 @@
 		"build-production": "cross-env NODE_ENV=production vite build --config vite.config.ts"
 	},
 	"dependencies": {
+		"@hookform/error-message": "^2.0.1",
 		"axios": "^1.6.1",
 		"base-64": "^1.0.0",
 		"bootstrap": "^5.2.3",
@@ -26,7 +27,7 @@
 		"react": "^18.2.0",
 		"react-bootstrap": "^2.8.0",
 		"react-chartjs-2": "^5.2.0",
-		"react-datepicker": "^4.24.0",
+		"react-datepicker": "^4.8.0",
 		"react-dom": "^18.2.0",
 		"react-dropzone": "^14.2.3",
 		"react-hook-form": "^7.45.4",
@@ -40,6 +41,7 @@
 	"devDependencies": {
 		"@types/luxon": "^3.4.2",
 		"@types/react": "^18.2.15",
+		"@types/react-datepicker": "^6.2.0",
 		"@types/react-dom": "^18.2.7",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
