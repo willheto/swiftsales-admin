@@ -36,7 +36,9 @@
 		"react-router-dom": "^6.3.0",
 		"react-select": "^5.7.0",
 		"react-spinners": "^0.13.8",
-		"styled-components": "^6.1.1"
+		"react-toastify": "^10.0.5",
+		"styled-components": "^6.1.1",
+		"toastify": "^2.0.1"
 	},
 	"devDependencies": {
 		"@types/luxon": "^3.4.2",

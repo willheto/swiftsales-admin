@@ -36,7 +36,7 @@ const Login = ({
 				setUser(response.user);
 			}
 		} catch (exception: any) {
-			setLoginError(exception.message);
+			setLoginError(exception.error);
 		} finally {
 			setIsAuthenticating(false);
 		}

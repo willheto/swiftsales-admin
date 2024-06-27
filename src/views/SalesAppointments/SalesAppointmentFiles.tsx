@@ -87,6 +87,9 @@ const SalesAppointmentFiles = ({ methods }) => {
 				<aside>
 					<div className="d-flex flex-column">
 						<Form.Text className="text-muted">
+							All uploaded files are available for preview and download during the sales appointment.
+						</Form.Text>
+						<Form.Text className="text-muted">
 							Allowed filetypes: .jpg, .jpeg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx
 						</Form.Text>
 						<Form.Text className="text-muted">Maximum filesize: 10 MB</Form.Text>
