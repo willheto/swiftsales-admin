@@ -15,13 +15,12 @@ interface UserInterface {
 
 interface LeadInterface {
 	leadID: number;
-	businessID: number | null;
+	businessID: string;
 	companyName: string;
-	contactPerson: string | null;
-	contactPhone: string | null;
-	contactEmail: string | null;
-	header: string | null;
-	description: string | null;
+	contactPerson: string;
+	contactPhone: string;
+	contactEmail: string;
+	notes: string;
 	created_at: string;
 	updated_at: string;
 }
@@ -31,7 +30,7 @@ interface SalesAppointmentInterface {
 	leadID: number;
 	timeStart: string;
 	timeEnd: string;
-	notes: string | null;
+	notes: string;
 	meetingUrl: string;
 	isCustomerAllowedToShareFiles: boolean;
 	isSalesAppointmentSecuredWithPassword: boolean;

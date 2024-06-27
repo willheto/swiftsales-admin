@@ -6,11 +6,11 @@ import SwiftSalesAdmin from '../SwiftSalesAdmin/SwiftSalesAdmin';
 import { authenticate } from '@src/api/services/authService';
 import useMobile from '@src/hooks/useMobile';
 
-const Root = () => {
+const Root = (): JSX.Element => {
 	const { user, setUser } = useUser();
 	const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
-	const tryToAuthenticate = useCallback(async () => {
+	const tryToAuthenticate = useCallback(async (): Promise<void> => {
 		try {
 			const token = localStorage.getItem('swiftsalesAuthToken');
 			if (!token) return;
@@ -21,6 +21,9 @@ const Root = () => {
 			}
 		} catch (error) {
 			console.log(error);
+			if (error.error === 'Expired token') {
+				localStorage.removeItem('swiftsalesAuthToken');
+			}
 		} finally {
 			setIsAuthenticating(false);
 		}

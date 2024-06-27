@@ -16,7 +16,12 @@ type SalesAppointmentFormProps = {
 	successCallback: () => void;
 };
 
-const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallback }: SalesAppointmentFormProps) => {
+const SalesAppointmentForm = ({
+	salesAppointment,
+	leads,
+	onClose,
+	successCallback,
+}: SalesAppointmentFormProps): JSX.Element | null => {
 	const methods = useForm({
 		defaultValues: {
 			...salesAppointment,
@@ -33,7 +38,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 	const [error, setError] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const onSubmit = async (data: any) => {
+	const onSubmit = async (data: Partial<SalesAppointmentInterface>): Promise<void> => {
 		try {
 			setIsSubmitting(true);
 			let payload: any;
@@ -70,7 +75,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 		}
 	};
 
-	const handleDelete = async () => {
+	const handleDelete = async (): Promise<void> => {
 		try {
 			if (salesAppointment) {
 				await api.salesAppointments.deleteSingle(salesAppointment.salesAppointmentID);
@@ -81,19 +86,13 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 		}
 	};
 
-	const getCurrentDateTime = () => {
-		const date = new Date();
-		date.setMinutes(date.getMinutes() + 15);
-		return date;
-	};
-
 	if (!leads) return null;
 
 	return (
 		<Form className="p-4" onSubmit={handleSubmit(onSubmit)}>
 			<h5>{salesAppointment ? 'Edit' : 'Create'} Sales appointment</h5>
 			<div className="d-flex flex-column gap-2 mt-4">
-				<Form.Group>
+				<Form.Group className="required">
 					<Form.Label>Lead</Form.Label>
 					<Form.Select
 						{...register('leadID', {
@@ -110,13 +109,14 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 							</option>
 						))}
 					</Form.Select>
+					{leads.length === 0 && <Form.Text className="text-danger">You need to create a lead before creating sales appointments.</Form.Text>}
 				</Form.Group>
 				<Form.Group>
 					<Form.Label>Notes</Form.Label>
-					<Form.Control type="text" as="textarea" rows={6} {...register('notes')} />
+					<Form.Control maxLength={1000} type="text" as="textarea" rows={6} {...register('notes')} />
 					<Form.Text className="text-muted">These notes will be shown to everyone in the meeting.</Form.Text>
 				</Form.Group>
-				<Form.Group className="d-flex flex-column">
+				<Form.Group className="d-flex flex-column required">
 					<Form.Label>Meeting start time</Form.Label>
 					<DatePicker
 						showYearDropdown
@@ -133,7 +133,7 @@ const SalesAppointmentForm = ({ salesAppointment, leads, onClose, successCallbac
 						required={true}
 					/>
 				</Form.Group>
-				<Form.Group className="d-flex flex-column">
+				<Form.Group className="d-flex flex-column required">
 					<Form.Label>Meeting end time</Form.Label>
 					<DatePicker
 						showYearDropdown

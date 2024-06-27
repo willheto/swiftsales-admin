@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Table from '../../components/Table/Table';
 import { Card, Modal } from 'react-bootstrap';
 import Content from '@src/components/SwiftSalesAdmin/Content';
@@ -10,22 +10,21 @@ import LeadForm from './LeadForm';
 import LeadExport from './LeadExport';
 import useSearch from '@src/hooks/useSearch';
 
-const Leads = () => {
+const Leads = (): JSX.Element => {
 	const { user } = useUser();
-	const [leads, setLeads] = React.useState<LeadInterface[]>();
+	const [leads, setLeads] = useState<LeadInterface[]>();
 
 	const fetchLeads = useCallback(async () => {
 		try {
 			if (!user) return;
 			const response = await api.leads.getAllByUserID(user.userID);
-
 			setLeads(response);
 		} catch (e) {
 			console.log(e);
 		}
 	}, [user]);
 
-	React.useEffect(() => {
+	useEffect((): void => {
 		fetchLeads();
 	}, [fetchLeads]);
 
@@ -51,8 +50,12 @@ const Leads = () => {
 			label: 'Contact Email',
 		},
 		{
-			name: 'header',
-			label: 'Header',
+			name: 'notes',
+			label: 'Notes',
+			render: (lead: LeadInterface) => {
+				const { notes } = lead;
+				return <span>{notes.length > 50 ? notes.substring(0, 50) + '...' : notes}</span>;
+			},
 		},
 		{
 			name: 'created_at',
@@ -67,16 +70,16 @@ const Leads = () => {
 	const [editingLead, setEditingLead] = React.useState<LeadInterface | null>();
 	const [isImporting, setIsImporting] = React.useState<boolean>(false);
 
-	const handleAddEdit = (lead?: LeadInterface) => {
+	const handleAddEdit = (lead?: LeadInterface): void => {
 		setEditingLead(lead);
 	};
 
-	const refetch = async () => {
+	const refetch = async (): Promise<void> => {
 		await fetchLeads();
 	};
 
 	const { renderSearchField, filteredResources } = useSearch(leads || [], {
-		searchColumns: ['companyName', 'contactPerson', 'contactPhone', 'contactEmail', 'header'],
+		searchColumns: ['companyName', 'contactPerson', 'contactPhone', 'contactEmail', 'notes'],
 	});
 
 	return (
